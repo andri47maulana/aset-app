@@ -322,9 +322,9 @@
 					                        	$nilai_buku_aset_= floatval(json_decode($divestasi_data->nilai_buku_aset)[$i] ?? 0);
 					                        	$nilai_objek_aset_ = floatval(json_decode($divestasi_data->nilai_objek_aset)[$i] ?? 0);
 
-					                        	$total_luas+=is_numeric($luas_aset_) ? $luas_aset_ : 0;
-					                        	$total_nilai_buku+=is_numeric($nilai_buku_aset_)?$nilai_buku_aset_ : 0;
-					                        	$total_nilai_objek+=is_numeric($nilai_objek_aset_)?$nilai_objek_aset_ : 0;
+					                        	if(is_numeric($luas_aset_))$total_luas+= $luas_aset_;
+					                        	if(is_numeric($nilai_buku_aset_))$total_nilai_buku+=$nilai_buku_aset_;
+					                        	if(is_numeric($nilai_objek_aset_))$total_nilai_objek+=$nilai_objek_aset_;
 					                        ?>
 					                        	<div class="row mb-3 multiple_aset">
 												    <div class="col-md-12 form-group d-flex align-items-center">
