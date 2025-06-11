@@ -318,13 +318,18 @@
 					                        		continue;
 					                        	}
 
-					                        	$luas_aset_= floatval(json_decode($divestasi_data->luas_aset)[$i] ?? 0);
-					                        	$nilai_buku_aset_= floatval(json_decode($divestasi_data->nilai_buku_aset)[$i] ?? 0);
-					                        	$nilai_objek_aset_ = floatval(json_decode($divestasi_data->nilai_objek_aset)[$i] ?? 0);
+					                        	$luas_list         = json_decode($divestasi_data->luas_aset, true);
+												$nilai_buku_list   = json_decode($divestasi_data->nilai_buku_aset, true);
+												$nilai_objek_list  = json_decode($divestasi_data->nilai_objek_aset, true);
 
-					                        	if(is_numeric($luas_aset_))$total_luas+= $luas_aset_;
-					                        	if(is_numeric($nilai_buku_aset_))$total_nilai_buku+=$nilai_buku_aset_;
-					                        	if(is_numeric($nilai_objek_aset_))$total_nilai_objek+=$nilai_objek_aset_;
+												$luas_aset_        = floatval($luas_list[$i] ?? 0);
+												$nilai_buku_aset_  = floatval($nilai_buku_list[$i] ?? 0);
+												$nilai_objek_aset_ = floatval($nilai_objek_list[$i] ?? 0);
+
+
+												$total_luas        += $luas_aset_;
+												$total_nilai_buku  += $nilai_buku_aset_;
+												$total_nilai_objek += $nilai_objek_aset_;
 					                        ?>
 					                        	<div class="row mb-3 multiple_aset">
 												    <div class="col-md-12 form-group d-flex align-items-center">
