@@ -630,6 +630,11 @@ class C_divestasi extends BaseController
         $data['total_nilai_objek_divestasi']    =0;//$r['total_kjpp'];
         $data['total_nilai_buku']               =0;//$r['total_nilai_buku'];
         $data['total_nilai_realisasi']          =0;//$r['total_nilai_realisasi'];
+        $data['group_progress']['P']=0;
+        $data['group_progress']['H']=0;
+        $data['group_progress']['R']=0;
+
+
         foreach($result as $r){
             $data['group_progress'][$r['group_tahapan']]=$r['jumlah'];
             $data['group_progress_total']           +=$r['jumlah'];

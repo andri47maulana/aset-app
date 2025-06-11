@@ -167,7 +167,7 @@ $encrypter = \Config\Services::encrypter();
                             <i class="fas fa-spinner fa-3x mr-3"></i>
                             <div>
                                 <h5 class="card-title">Progress Regional</h5>
-                                <p class="card-text"><b id="totalProgress" data=0 style="font-size:20px"><?= $dash_progress['group_progress']['R']; ?></b> Objek Divestasi</p>
+                                <p class="card-text"><b id="totalProgress" data=0 style="font-size:20px"><?= $dash_progress['group_progress']['R'] ?? 0; ?></b> Objek Divestasi</p>
                             </div>
                         </div>
                     </div>
@@ -179,7 +179,7 @@ $encrypter = \Config\Services::encrypter();
                             <i class="fas fa-spinner fa-3x mr-3"></i>
                             <div>
                                 <h5 class="card-title">Progress Head Office</h5>
-                                <p class="card-text"><b id="totalProgress" data=0 style="font-size:20px"><?= $dash_progress['group_progress']['H']; ?></b> Objek Divestasi</p>
+                                <p class="card-text"><b id="totalProgress" data=0 style="font-size:20px"><?= $dash_progress['group_progress']['H'] ?? 0; ?></b> Objek Divestasi</p>
                             </div>
                         </div>
                     </div>
@@ -191,7 +191,7 @@ $encrypter = \Config\Services::encrypter();
                             <i class="fas fa-spinner fa-3x mr-3"></i>
                             <div>
                                 <h5 class="card-title">Progress Pemegang Saham</h5>
-                                <p class="card-text"><b id="totalProgress" data=0 style="font-size:20px"><?= $dash_progress['group_progress']['P']; ?></b> Objek Divestasi</p>
+                                <p class="card-text"><b id="totalProgress" data=0 style="font-size:20px"><?= $dash_progress['group_progress']['P'] ?? 0; ?></b> Objek Divestasi</p>
                             </div>
                         </div>
                     </div>
