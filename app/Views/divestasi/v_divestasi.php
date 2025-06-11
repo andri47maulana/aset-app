@@ -80,7 +80,7 @@ $encrypter = \Config\Services::encrypter();
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Divestasi__</li>
+              <li class="breadcrumb-item active" aria-current="page">Divestasi@</li>
             </ol>
           </nav>
         </div>
@@ -604,56 +604,15 @@ $encrypter = \Config\Services::encrypter();
             var persen = {};
             var progress_divestasi = <?= json_encode($progress_divestasi['persen'])?>;
 
-            // var total_dokumen;
-
-
-            // if (progress == null || typeof progress !== 'object') {
-            //     progress = { jumlah: {} };
-            // }
-
-            // progress = progress || {}; // Ensure progress exists
-            // progress.jumlah = progress.jumlah || {};
-            // progress.jumlah[row.id_divestasi] = progress.jumlah[row.id_divestasi] || 0;
-
-            // // if (progress?.jumlah?.[row.id_divestasi] === undefined) {
-            // //     progress.jumlah[row.id_divestasi] = 0;
-            // // }
-
-
-            //if(row.id_divestasi>0 && row.metode!=9){
-            //   if(row.except_tahapan!='' && row.except_tahapan!=null){
-            //       var all_dokumen = all_tahapan[row.metode].dokumen;
-            //       const excludedKeys = new Set(row.except_tahapan.split(','));
-
-            //       const tahapanActive = Object.fromEntries(
-            //           Object.entries(all_dokumen).filter(([key]) => !excludedKeys.has(key))
-            //       );
-
-            //       // Menghitung total
-            //       const { totalKeys, totalItems } = sumData([tahapanActive]);
-            //       total_dokumen = totalItems;
-            //   }else{
-            //       total_dokumen = all_tahapan[row.metode].dokumen_length;
-            //   }
-              
-            //   let circle_color = "#007bff";
-            //   if(progress.jumlah[row.id_divestasi]>0){
-            //     persen[row.id_divestasi]= progress.jumlah[row.id_divestasi]/total_dokumen*100;
-            //     progress_persen[row.id_divestasi] = persen[row.id_divestasi];
-
-            //     if(persen[row.id_divestasi]==100){
-            //         circle_color="#09b954";
-            //         total_selesai[row.id_divestasi]=1;
-            //     }
-
-            //     persen[row.id_divestasi]= persen[row.id_divestasi].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });                
-            //   }else{
-            //     persen[row.id_divestasi]=0;
-            //   }
 
             if(row.id_divestasi>0 && row.metode!=9){
                 let circle_color = "#007bff";
-                persen[row.id_divestasi] = progress_divestasi[row.id_divestasi];
+
+                try{
+                  persen[row.id_divestasi] = progress_divestasi[row.id_divestasi];
+                }catch(e){
+                  persen[row.id_divestasi] = 0;
+                }
 
                 if(persen[row.id_divestasi]!==undefined){
                     

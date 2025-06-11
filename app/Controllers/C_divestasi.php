@@ -13,7 +13,7 @@ use App\Models\M_maia_kml;
 use App\Models\M_maia_masterlist;
 use App\Models\M_divestasi;
 
-error_reporting(~E_ALL & ~E_NOTICE);
+//error_reporting(~E_ALL & ~E_NOTICE);
 
 class C_divestasi extends BaseController
 {
@@ -60,7 +60,6 @@ class C_divestasi extends BaseController
         if ($data['id_region'] == 99) {
             $data['id_region'] = 0;
         }
-
 
         return view('divestasi/v_divestasi', $data);
     }
@@ -558,6 +557,8 @@ class C_divestasi extends BaseController
                 group by id_divestasi";
         $query=$this->db->query($sql);
         $result = $query->getResultArray();
+        $data=array();
+
         foreach($result as $r){
             $data[$r['id_divestasi']]=$r['jumlah'];
         }
@@ -576,6 +577,7 @@ class C_divestasi extends BaseController
                 $data['selesai']++;
             }
         }
+
 
         return $data;
 

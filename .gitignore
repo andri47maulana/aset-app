@@ -13,6 +13,7 @@
 .env
 env
 cek_koneksi.php
+/*
 
 !.gitignore
 !/app/controllers
