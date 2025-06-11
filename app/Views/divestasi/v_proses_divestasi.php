@@ -318,10 +318,9 @@
 					                        		continue;
 					                        	}
 
-
-					                        	$total_luas+=json_decode($divestasi_data->luas_aset)[$i];
-					                        	$total_nilai_buku+=json_decode($divestasi_data->nilai_buku_aset)[$i];
-					                        	$total_nilai_objek+=json_decode($divestasi_data->nilai_objek_aset)[$i];
+					                        	$total_luas+=floatval(json_decode($divestasi_data->luas_aset)[$i]);
+					                        	$total_nilai_buku+=floatval(json_decode($divestasi_data->nilai_buku_aset)[$i]);
+					                        	$total_nilai_objek+=floatval(json_decode($divestasi_data->nilai_objek_aset)[$i]);
 					                        ?>
 					                        	<div class="row mb-3 multiple_aset">
 												    <div class="col-md-12 form-group d-flex align-items-center">
