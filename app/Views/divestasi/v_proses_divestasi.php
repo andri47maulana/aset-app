@@ -308,12 +308,19 @@
 
 					                        <?php 
 					                        $i=0;
-					                        $total_luas=json_decode($divestasi_data->luas_aset)[0];
-					                        $total_nilai_buku=json_decode($divestasi_data->nilai_buku_aset)[0];
-					                        $total_nilai_objek=json_decode($divestasi_data->nilai_objek_aset)[0];
-					                        foreach(json_decode($divestasi_data->id_maia_masterlists) as $asets){ 
+					                        
+					                        $total_luas = 0;
+											$total_nilai_buku = 0;
+											$total_nilai_objek = 0;
 
+					                        
+
+					                        foreach(json_decode($divestasi_data->id_maia_masterlists) as $asets){ 
 					                        	if($i==0){
+					                        		$total_luas=json_decode($divestasi_data->luas_aset)[0];
+							                        $total_nilai_buku=json_decode($divestasi_data->nilai_buku_aset)[0];
+							                        $total_nilai_objek=json_decode($divestasi_data->nilai_objek_aset)[0];
+
 					                        		$i++;
 					                        		continue;
 					                        	}
@@ -325,7 +332,6 @@
 												$luas_aset_        = floatval($luas_list[$i] ?? 0);
 												$nilai_buku_aset_  = floatval($nilai_buku_list[$i] ?? 0);
 												$nilai_objek_aset_ = floatval($nilai_objek_list[$i] ?? 0);
-
 
 												$total_luas        += $luas_aset_;
 												$total_nilai_buku  += $nilai_buku_aset_;
