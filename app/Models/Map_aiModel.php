@@ -123,7 +123,7 @@ class Map_aiModel extends Model
         {
             // API Key OpenAI
             $url = "https://api.openai.com/v1/chat/completions";
-            $apiKey = "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";
+            $apiKey = "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";
 
             // Endpoint OpenAI            
 
@@ -215,7 +215,7 @@ class Map_aiModel extends Model
     // public function fetch_ai_chatGPT($role_system, $pertanyaan) {//untuk output narasi/text
     //     // API Key OpenAI
     //         $url = "https://api.openai.com/v1/chat/completions";
-    //         $apiKey = "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";
+    //         $apiKey = "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";
 
     //         // Endpoint OpenAI            
 
@@ -289,7 +289,7 @@ class Map_aiModel extends Model
 
 
     function ai_jawab_chatGpt($pertanyaan){
-        $api_key = "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";
+        $api_key = "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";
         $assistant_id = "asst_8WveyY29twUs1v8RQfudDm16";
 
         // 1. Membuat Thread Baru

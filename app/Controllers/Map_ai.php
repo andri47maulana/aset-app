@@ -473,7 +473,6 @@ class Map_ai extends BaseController
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        var_dump($response);
         
         // if ($response && $httpCode === 200) {
         //     $responseData = json_decode($response, true);
