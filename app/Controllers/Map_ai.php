@@ -4,8 +4,6 @@ use App\Models\Map_aiModel;
 use Config\Database;
 
 
-
-
 class Map_ai extends BaseController
 {
 
