@@ -193,7 +193,7 @@
 
 					                <div class="card">
 					                    <div class="card-header bg-secondary text-white h4">
-					                        Informasi Aset
+					                        ID DIVESTASI : dives-<?php echo uniqid();?>
 					                        <span>
 					                        			<?php 
 												    	if($divestasi_data->metode==''){
@@ -280,27 +280,51 @@
 					                        // echo "</pre>";?>
 					                        <div class="row mb-3 multiple_aset">
 											    <div class="col-md-12 form-group d-flex align-items-center">
-											        <div class="me-2 col-md-4 form-group">
-											            <label for="objekDivestasi1">Areal SAP</label>
+											        <div class="me-2 col-md-3 form-group">
+											            <label for="objekDivestasi1">Data SAP</label>
 											            <span class="flex-grow-1 me-2 optionAset">
 													    	<select  id="selectAset0" multiple="multiple" class="form-control selectAset"></select>
 													    </span>
 											        </div>
 											        <div class="me-2 col-md-2 form-group">
-											            <label for="objekDivestasi2">Luas (Meter)</label>
-											            <input type="text" value="<?= json_decode($divestasi_data->luas_aset)[0] ?>" class="form-control luasAset" placeholder="">
+											            <label for="jenis_aset">Jenis Aset</label>
+											             <select class="form-control jenis_aset">
+													        <option value="" <?= ($divestasi_data->metode=='')?"selected":''?>>--Pilih Jenis--</option>
+												            <option value="tanah" <?= ($divestasi_data->metode=='tanah')?"selected":''?>>Tanah</option>
+												            <option value="bangunan" <?= ($divestasi_data->metode=='bangunan')?"selected":''?>>Bangunan</option>
+												            <option value="tanaman" <?= ($divestasi_data->metode=='tanaman')?"selected":''?>>Tanaman</option>
+												            <option value="lainnya" <?= ($divestasi_data->metode=='lainnya')?"selected":''?>>Lainnya</option>
+												        </select>
 											        </div>
+											        <div class="me-1 col-md-1 form-group">
+											            <label for="objekDivestasi2">Jumlah</label>
+											            <input type="text" value="<?= json_decode($divestasi_data->luas_aset)[0] ?>" class="form-control jumlahAset" placeholder="">
+											            <span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Satuan: <input class="satuanAset" style="width:50px" type='text' value='Meter' /></span>
+											        </div>
+											        
 
 											        <div class="col-md-2 form-group ">
 												    	<label for="objekDivestasi">Nilai Buku</label>
 												    	<input type="text" value="<?= json_decode($divestasi_data->nilai_buku_aset)[0] ?>" class="form-control me-2 nilaiBukuAset" placeholder="Rp. ">
+												    		<span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Tgl. Nilai: <input class="tgl_nilai_buku" type='date' value='2025-01-01' /></span>
+
 												    </div>
-											        <div class="me-2 col-md-4 form-group">
-											            <label for="objekDivestasi">Nilai Objek Divestasi (KJPP)</label>
+
+												    <div class="me-2 col-md-2 form-group">
+											            <label for="objekDivestasi">Nilai NJOP</label>
 											            <div class="d-flex align-items-center">
-												            <input type="text" value="<?= json_decode($divestasi_data->nilai_objek_aset)[0] ?>" class="form-control nilaiObjekAset" placeholder="Rp. ">
+												            <input type="text" value="<?= json_decode($divestasi_data->nilai_objek_aset)[0] ?>" class="form-control nilai_njop" placeholder="Rp. ">
+													    </div>
+												    		<span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Tgl. NJOP: <input class="tgl_njop"  type='date' value='2025-01-01' /></span>
+											        </div>
+
+											        <div class="me-2 col-md-2 form-group">
+											            <label for="objekDivestasi">Nilai KJPP</label>
+											            <div class="d-flex align-items-center">
+												            <input type="text" value="<?= json_decode($divestasi_data->nilai_objek_aset)[0] ?>" class="form-control nilai_kjpp" placeholder="Rp. ">
 												            <button class="btn btn-success btn-sm btn-add-aset" data-id="1" onclick="add_aset(this)"><i class="fa fa-plus"></i></button>
 													    </div>
+												    		<span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Tgl. Penilaian:<input class="tgl_kjpp" type='date' value='2025-01-01' /></span>
 											        </div>
 											        
 											    </div>
@@ -308,13 +332,13 @@
 
 					                        <?php 
 					                        $i=0;
-					                        
+
 					                        $total_luas = 0;
 											$total_nilai_buku = 0;
 											$total_nilai_objek = 0;
 
 					                        
-
+											if(isset($divestasi_data->id_maia_masterlists)){
 					                        foreach(json_decode($divestasi_data->id_maia_masterlists) as $asets){ 
 					                        	if($i==0){
 					                        		$total_luas=json_decode($divestasi_data->luas_aset)[0];
@@ -324,6 +348,7 @@
 					                        		$i++;
 					                        		continue;
 					                        	}
+					                        }
 
 					                        	$luas_list         = json_decode($divestasi_data->luas_aset, true);
 												$nilai_buku_list   = json_decode($divestasi_data->nilai_buku_aset, true);
@@ -339,27 +364,49 @@
 					                        ?>
 					                        	<div class="row mb-3 multiple_aset">
 												    <div class="col-md-12 form-group d-flex align-items-center">
-												        <div class="me-2 col-md-4 form-group">
-												            <label for="objekDivestasi1">Areal SAP</label>
+												        <div class="me-2 col-md-3 form-group">
+												            <label for="objekDivestasi1">Data SAP</label>
 												            <span class="flex-grow-1 me-2 optionAset">
 														    	<select id="selectAset<?= $i?>"  name="asets" multiple="multiple" class="form-control selectAset"></select>
 														    </span>
 												        </div>
 												        <div class="me-2 col-md-2 form-group">
-												            <label for="objekDivestasi2">Luas (Meter)</label>
-												            <input type="text" value="<?= json_decode($divestasi_data->luas_aset)[$i] ?>" class="form-control luasAset" placeholder="">
+												            <label for="jenis_aset">Jenis Aset</label>
+												             <select class="form-control jenis_aset">
+													            <option value="" <?= ($divestasi_data->metode=='')?"selected":''?>>--Pilih Jenis--</option>
+													            <option value="tanah" <?= ($divestasi_data->metode=='tanah')?"selected":''?>>Tanah</option>
+													            <option value="bangunan" <?= ($divestasi_data->metode=='bangunan')?"selected":''?>>Bangunan</option>
+													            <option value="tanaman" <?= ($divestasi_data->metode=='tanaman')?"selected":''?>>Tanaman</option>
+													            <option value="lainnya" <?= ($divestasi_data->metode=='lainnya')?"selected":''?>>Lainnya</option>
+													        </select>
+											        	</div>
+												        <div class="me-1 col-md-1 form-group">
+												            <label for="objekDivestasi2">Jumlah</label>
+												            <input type="text" value="<?= json_decode($divestasi_data->luas_aset)[$i] ?>" class="form-control jumlahAset" placeholder="">
+											            <span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Satuan: <input class="satuanAset" style="width:50px" type='text' value='Meter' /></span>
 												        </div>
 
 												        <div class="col-md-2 form-group ">
 													    	<label for="objekDivestasi">Nilai Buku</label>
 													    	<input type="text" value="<?= json_decode($divestasi_data->nilai_buku_aset)[$i] ?>" class="form-control me-2 nilaiBukuAset" placeholder="Rp. ">
+												    		<span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Tgl. Nilai: <input class="tgl_nilai_buku" type='date' value='2025-01-01' /></span>
 													    </div>
-												        <div class="me-2 col-md-4 form-group">
-												            <label for="objekDivestasi">Nilai Objek Divestasi (KJPP)</label>
+													<div class="me-2 col-md-2 form-group">
+											            <label for="objekDivestasi">Nilai NJOP</label>
+											            <div class="d-flex align-items-center">
+												            <input type="text" value="<?= json_decode($divestasi_data->nilai_objek_aset)[0] ?>" class="form-control nilai_njop" placeholder="Rp. ">
+													    </div>
+												    		<span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Tgl. NJOP: <input class="tgl_njop"  type='date' value='2025-01-01' /></span>
+											        </div>
+
+											        <div class="me-2 col-md-2 form-group">
+												            <label for="objekDivestasi">Nilai KJPP</label>
 												            <div class="d-flex align-items-center">
-													            <input type="text" value="<?= json_decode($divestasi_data->nilai_objek_aset)[$i] ?>" class="form-control nilaiObjekAset" placeholder="Rp. ">
+													            <input type="text" value="<?= json_decode($divestasi_data->nilai_objek_aset)[$i] ?>" class="form-control nilai_kjpp" placeholder="Rp. ">
 													            <button class="btn btn-success btn-sm btn-add-aset" data-id="<?= $i+1?>" onclick="add_aset(this)"><i class="fa fa-plus"></i></button>
+													            <br>
 														    </div>
+												    		<span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Tgl. Penilaian:<input class="tgl_kjpp" type='date' value='2025-01-01' /></span>
 												        </div>
 												        
 												    </div>
@@ -378,12 +425,14 @@
 													    </span>
 											        </div>
 
-											        <div class="me-2 col-md-2 form-group">
-											            <label for="objekDivestasi1">Total Luas (Meter)</label>
-											            <span class="flex-grow-1 me-2">
-												        	<input type="input" id="luasObjekDivestasi" readonly value="<?= ($total_luas)?>" class="form-control formatLuasObjek">
-													    </span>
+											        <div class="me-2 col-md-1 form-group">
+												            
 											        </div>
+
+											        <div class="me-1 col-md-1 form-group">
+											           
+											        </div>
+
 
 											        <div class="me-2 col-md-2 form-group">
 											            <label for="objekDivestasi1">Total Nilai Buku (Rp)</label>
@@ -392,8 +441,16 @@
 													    </span>
 											        </div>
 
-											        <div class="me-2 col-md-4 form-group">
-											            <label for="objekDivestasi1">Total Nilai Objek Divestasi (KJPP)</label>
+											        <div class="me-2 col-md-2 form-group">
+											            <label for="objekDivestasi1">Total Nilai NJOP</label>
+											            <span class="flex-grow-1 me-2">
+												        	<input type="input" id="nilaiObjekDivestasi" readonly value="<?= ($total_nilai_objek)?>" class="form-control formatNilaiObjek">
+													    </span>
+											        </div>
+
+
+											        <div class="me-2 col-md-2 form-group">
+											            <label for="objekDivestasi1">Total Nilai KJPP</label>
 											            <span class="flex-grow-1 me-2">
 												        	<input type="input" id="nilaiObjekDivestasi" readonly value="<?= ($total_nilai_objek)?>" class="form-control formatNilaiObjek">
 													    </span>
@@ -403,28 +460,33 @@
 												</div>
 					                        </div>
 
+					                    
+
 					                        <div class="row mb-3">
 					                            <div class="col-md-12 form-group d-flex align-items-center">
-					                            	<div class="me-2 col-md-4 form-group">
-											            
-											        </div>
-
-											        <div class="me-2 col-md-2 form-group">
-											            
-											        </div>
-
-											        <div class="me-2 col-md-2 form-group">
-											            
-											        </div>
-
-											        <div class="me-2 col-md-4 form-group">
-											            <label for="objekDivestasi1">Realisasi Pembayaran</label>
+					                            	<div class="me-2 col-md-5 form-group">
+											            <label for="objekDivestasi1"></label>
 											            <span class="flex-grow-1 me-2">
-												        	<input type="input" id="nilaiRealisasiDivestasi" value="<?= ($divestasi_data->realisasi_pembayaran)?>" class="form-control formattedInput">
+													    </span>
+											        </div>
+											        <div class="me-2 col-md-4 form-group">
+											            <label for="objekDivestasi1"></label>
+											            <span class="flex-grow-1 me-2">
+											            	<h3>TOTAL REALISASI PEMBAYARAN:</h3>
+													    </span>
+											        </div>
+											        
+
+
+											        <div class="me-2 col-md-3 form-group">
+											            <span class="flex-grow-1 me-2" style="text-align: right; display: flow;">
+											            	<h1>Rp. <?= number_format(($divestasi_data->realisasi_pembayaran))?></h1>
 													    </span>
 											        </div>
 												</div>
 					                        </div>
+
+
 
 					                        <div class="text-center mt-4">
 					                            <!--<button class="btn btn-danger">Hapus Aset</button> -->
@@ -796,84 +858,140 @@
                 function saveDivestasi(id){
                 	let data ={};
                 	data['id_divestasi']			= id;
-                	data['metode']     				= $("#metode_tahapan :selected").val();
+                	data['objek_divestasi'] 		= $("#objekDivestasi").val();
+                	data['jenis_rkap']				= $("#jenis_rkap").val();
+                	data['lokasi_objek_divestasi']	= $("#lokasi_objek_divestasi").val();
                 	data['start_date'] 				= $("#startDate").val();
                 	data['target_date'] 			= $("#targetDate").val();
-                	data['objek_divestasi'] 		= $("#objekDivestasi").val();
-                	data['luas_objek_divestasi'] 	= AutoNumeric.getAutoNumericElement("#luasObjekDivestasi").getNumericString();
-                	data['nilai_objek_divestasi'] 	= AutoNumeric.getAutoNumericElement("#nilaiObjekDivestasi").getNumericString();
-                	data['nilai_buku_divestasi'] 	= AutoNumeric.getAutoNumericElement("#nilaiBukuDivestasi").getNumericString();
-                	data['nilai_realisasi_divestasi']= AutoNumeric.getAutoNumericElement("#nilaiRealisasiDivestasi").getNumericString();
-                	data['jenis_rkap']				= $("#jenis_rkap").val();
-                	data['lokasi_objek_divestasi']				= $("#lokasi_objek_divestasi").val();
+                	data['metode']     				= $("#metode_tahapan :selected").val();
 
-                	data['assets'] 				 	=[];
-                	data['nilai_buku_aset']			=[];
-                	data['nilai_objek_aset']		=[];
-                	data['luas_aset']				=[];
-
-
-					// Simpan nilai aset ke dalam array
+                	// Simpan nilai aset ke dalam array
 					$(".selectAset").each(function(){
+						if(data['assets']==undefined){data['assets']=[]}
 					    data['assets'].push($(this).val());
 					});
 
-					// Pastikan jumlah elemen sama dan gunakan indeks yang sama
-					// $(".nilaiBukuAset").each(function(index){
-					//     if (data['assets'][index] !== undefined) {
-					//         data['nilai_buku_aset'].push({
-					//             id: data['assets'][index], // Ambil dari assets
-					//             nilai: $(this).val() // Ambil nilai buku aset
-					//         });
-					//     }
-					// });
 
-					// $(".selectAset").each(function(){
-					// 	data['assets'].push($(this).val());
-					// });
+					$(".jenis_aset").each(function(){
+						if(data['jenis_aset']==undefined){data['jenis_aset']=[]}
+						data['jenis_aset'].push($(this).val());
+					});
 
+					$(".jumlahAset").each(function(){
+						if(data['jumlah_aset']==undefined){data['jumlah_aset']=[]}
+						data['jumlah_aset'].push($(this).val());
+					});
+
+					$(".satuanAset").each(function(){
+						if(data['satuan_aset']==undefined){data['satuan_aset']=[]}
+						data['satuan_aset'].push($(this).val());
+					});
 
 					$(".nilaiBukuAset").each(function(){
+						if(data['nilai_buku_aset']==undefined){data['nilai_buku_aset']=[]}
 						data['nilai_buku_aset'].push($(this).val());
 					});
 
-					$(".nilaiObjekAset").each(function(){
-						data['nilai_objek_aset'].push($(this).val());
+					$(".tgl_nilai_buku").each(function(){
+						if(data['tgl_nilai_buku']==undefined){data['tgl_nilai_buku']=[]}
+						data['tgl_nilai_buku'].push($(this).val());
 					});
 
-					$(".luasAset").each(function(){
-						data['luas_aset'].push($(this).val());
+					$(".nilai_njop").each(function(){
+						if(data['nilai_njop']==undefined){data['nilai_njop']=[]}
+						data['nilai_njop'].push($(this).val());
 					});
 
+					$(".tgl_njop").each(function(){
+						if(data['tgl_njop']==undefined){data['tgl_njop']=[]}
+						data['tgl_njop'].push($(this).val());
+					});
+
+					$(".nilai_kjpp").each(function(){
+						if(data['nilai_kjpp']==undefined){data['nilai_kjpp']=[]}
+						data['nilai_kjpp'].push($(this).val());
+					});
+
+					$(".tgl_kjpp").each(function(){
+						if(data['tgl_kjpp']==undefined){data['tgl_kjpp']=[]}
+						data['tgl_kjpp'].push($(this).val());
+					});
+
+                	
+                	
+                	// data['luas_objek_divestasi'] 	= AutoNumeric.getAutoNumericElement("#luasObjekDivestasi").getNumericString();
+                	// data['nilai_objek_divestasi'] 	= AutoNumeric.getAutoNumericElement("#nilaiObjekDivestasi").getNumericString();
+                	// data['nilai_buku_divestasi'] 	= AutoNumeric.getAutoNumericElement("#nilaiBukuDivestasi").getNumericString();
+                	// data['nilai_realisasi_divestasi']= AutoNumeric.getAutoNumericElement("#nilaiRealisasiDivestasi").getNumericString();
+                	
+
+                	// data['assets'] 				 	=[];
+                	// data['nilai_buku_aset']			=[];
+                	// data['nilai_objek_aset']		=[];
+                	// data['luas_aset']				=[];
 
 
-                	$.ajax({
-	                    method: "post",
-	                    url: "<?= base_url() ?>/C_divestasi/save",
-	                    data: data,
-	                    cache: false,
-	                    dataType: "json",
-	                    success: function(resp) {
-	                    	console.log(resp);
-	                        Swal.fire({
-	                            icon: 'success',
-	                            title: ' Berhasil !',
-	                            timer: 2500,
-	                            showCancelButton: false,
-	                            showConfirmButton: false
-	                        });
-	                        window.location.href = "<?= base_url('C_divestasi') ?>/proses/"+resp.id_divestasi;
-	                    },
-	                    error: function(xhr, status, error) {
-	                        Swal.fire({
-	                            icon: 'error',
-	                            title: ' Gagal !',
-	                            timer: 2500,
-	                            showCancelButton: false,
-	                            showConfirmButton: false
-	                        })
-	                    }
-	                });
+					
+
+					// // Pastikan jumlah elemen sama dan gunakan indeks yang sama
+					// // $(".nilaiBukuAset").each(function(index){
+					// //     if (data['assets'][index] !== undefined) {
+					// //         data['nilai_buku_aset'].push({
+					// //             id: data['assets'][index], // Ambil dari assets
+					// //             nilai: $(this).val() // Ambil nilai buku aset
+					// //         });
+					// //     }
+					// // });
+
+					// // $(".selectAset").each(function(){
+					// // 	data['assets'].push($(this).val());
+					// // });
+
+
+					// $(".nilaiBukuAset").each(function(){
+					// 	data['nilai_buku_aset'].push($(this).val());
+					// });
+
+					// $(".nilaiObjekAset").each(function(){
+					// 	data['nilai_objek_aset'].push($(this).val());
+					// });
+
+					// $(".luasAset").each(function(){
+					// 	data['luas_aset'].push($(this).val());
+					// });
+
+
+					console.log(data);
+
+
+
+                	// $.ajax({
+	                //     method: "post",
+	                //     url: "<?= base_url() ?>/C_divestasi/save",
+	                //     data: data,
+	                //     cache: false,
+	                //     dataType: "json",
+	                //     success: function(resp) {
+	                //     	console.log(resp);
+	                //         Swal.fire({
+	                //             icon: 'success',
+	                //             title: ' Berhasil !',
+	                //             timer: 2500,
+	                //             showCancelButton: false,
+	                //             showConfirmButton: false
+	                //         });
+	                //         window.location.href = "<?= base_url('C_divestasi') ?>/proses/"+resp.id_divestasi;
+	                //     },
+	                //     error: function(xhr, status, error) {
+	                //         Swal.fire({
+	                //             icon: 'error',
+	                //             title: ' Gagal !',
+	                //             timer: 2500,
+	                //             showCancelButton: false,
+	                //             showConfirmButton: false
+	                //         })
+	                //     }
+	                // });
                 }
             </script>
             <script>
@@ -1158,7 +1276,7 @@
             </script>
 
             <script src="https://cdn.jsdelivr.net/npm/autonumeric@4.5.4"></script>
-			<script>
+			<!-- <script>
 			  new AutoNumeric('.formattedInput', {
 			    digitGroupSeparator: ',',
 			    decimalCharacter: '.',
@@ -1182,7 +1300,7 @@
 			    decimalCharacter: '.',
 			    decimalPlaces: 0
 			  });
-			</script>
+			</script> -->
 
 
             <?= $this->endSection(); ?>

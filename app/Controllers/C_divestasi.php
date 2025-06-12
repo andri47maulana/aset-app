@@ -13,7 +13,7 @@ use App\Models\M_maia_kml;
 use App\Models\M_maia_masterlist;
 use App\Models\M_divestasi;
 
-error_reporting(~E_ALL & ~E_NOTICE);
+//error_reporting(~E_ALL & ~E_NOTICE);
 
 class C_divestasi extends BaseController
 {
