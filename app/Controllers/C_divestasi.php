@@ -239,51 +239,129 @@ class C_divestasi extends BaseController
     }
 
 
+
     public function save(){
-        $data['objek_divestasi']        = $this->request->getPost('objek_divestasi');
-        $data['luas_objek_divestasi']   = $this->request->getPost('luas_objek_divestasi');
-        $data['nilai_objek_divestasi']  = $this->request->getPost('nilai_objek_divestasi');
-        $data['nilai_buku']  = $this->request->getPost('nilai_buku_divestasi');
-        $data['realisasi_pembayaran']  = $this->request->getPost('nilai_realisasi_divestasi');
-        $data['jenis_rkap']  = $this->request->getPost('jenis_rkap');
-        $data['lokasi_objek_divestasi']  = $this->request->getPost('lokasi_objek_divestasi');
-
-
-        $assets     = $this->request->getPost('assets');
-        $nilai_buku = $this->request->getPost('nilai_buku_aset');
-        $nilai_objek= $this->request->getPost('nilai_objek_aset');
-        $luas       = $this->request->getPost('luas_aset');
-
+        // ---Structure Table---
+        // $data['id_divestasi'];
+        // $data['status_terakhir'];
+        // $data['created_at'];
+        // $data['update_at'];
+        // $data['metode'];
+        // $data['start_date'];
+        // $data['target_date'];
+        // $data['current_start_log'];
+        // $data['current_target_log'];
+        // $data['current_status'];
+        // $data['objek_divestasi'];
+        // $data['id_user'];
+        // $data['luas_objek_divestasi'];
+        // $data['nilai_objek_divestasi'];
+        // $data['lokasi_objek_divestasi'];
+        // $data['id_maia_masterlists'];
+        // $data['unit_id_user'];
+        // $data['realisasi_pembayaran'];
+        // $data['nilai_buku'];
+        // $data['except_tahapan'];
+        // $data['jenis_rkap'];
+        // $data['nilai_buku_aset'];
+        // $data['nilai_objek_aset'];
+        // $data['luas_aset'];
+        // echo json_encode($post);
         
-
-        $data['id_maia_masterlists'] =json_encode(array_column($assets, 0));
-        $data['nilai_buku_aset'] =json_encode($nilai_buku);
-        $data['nilai_objek_aset'] =json_encode($nilai_objek);
-        $data['luas_aset'] =json_encode($luas);
-
-            
-        $data['metode']                 = $this->request->getPost('metode');
+        $data['id_divestasi']           = $this->request->getPost('id_divestasi');
+        $data['objek_divestasi']        = $this->request->getPost('objek_divestasi');
+        $data['jenis_rkap']             = $this->request->getPost('jenis_rkap');
+        $data['lokasi_objek_divestasi'] = $this->request->getPost('lokasi_objek_divestasi');
         $data['start_date']             = $this->request->getPost('start_date');
         $data['target_date']            = $this->request->getPost('target_date');
-        $data['id_divestasi']           = $this->request->getPost('id_divestasi');
-        if($this->request->getPost('asets')!='')$data['id_maia_masterlists']= implode(',',$this->request->getPost('asets'));
+        $data['metode']                 = $this->request->getPost('metode');
+
+
+        //--MULTIPLE DATA--
+        $assets     = $this->request->getPost('assets');
+        $data['id_maia_masterlists'] =json_encode(array_column($assets, 0));
+
+        $jenis_aset = $this->request->getPost('jenis_aset');
+        $data['jenis_aset'] =json_encode($jenis_aset);
+
+        $jumlah_aset= $this->request->getPost('jumlah_aset');
+        $data['jumlah_aset'] =json_encode($jumlah_aset);
+
+        $satuan_aset= $this->request->getPost('satuan_aset');
+        $data['satuan_aset'] =json_encode($satuan_aset);
+
+        $nilai_buku_aset= $this->request->getPost('nilai_buku_aset');
+        $data['nilai_buku_aset'] =json_encode($nilai_buku_aset);
+
+        $tgl_nilai_buku= $this->request->getPost('tgl_nilai_buku');
+        $data['tgl_nilai_buku'] =json_encode($tgl_nilai_buku);
+
+        $nilai_njop= $this->request->getPost('nilai_njop');
+        $data['nilai_njop'] =json_encode($nilai_njop);
+
+        $tgl_njop= $this->request->getPost('tgl_njop');
+        $data['tgl_njop'] =json_encode($tgl_njop);
+
+        $nilai_kjpp= $this->request->getPost('nilai_kjpp');
+        $data['nilai_kjpp'] =json_encode($nilai_kjpp);
+
+        $tgl_kjpp= $this->request->getPost('tgl_kjpp');
+        $data['tgl_kjpp'] =json_encode($tgl_kjpp);
+
+
+        //--ADDITIONS
         $data['created_at']             = date('Y-m-d H:i:s');
-        $data['unit_id_user']           = session()->get('unit_id');
+
 
         $model = new M_Divestasi();
         $data['id_divestasi']           = $model->insert_divestasi_data($data);
 
-        $dataPesan['id_divestasi']      = $data['id_divestasi'];
-        $dataPesan['objek_divestasi']   = $data['objek_divestasi'];
-        $dataPesan['tglTarget']         = $data['target_date'];
-
-        $dataPesan['id_user']           = session()->get('user_id');
-        $dataPesan['jenis']             = 'registrasiDivestasi';
-        $dataPesan['phoneNumber']       = $this->getNoWa(session()->get('user_id'))->user_telp;
-        $dataPesan['tglKirim']          = date('Y-m-d');
-
-        // $this->create_notif_wa($dataPesan);
         echo json_encode($data);
+
+
+        // $data['luas_objek_divestasi']   = $this->request->getPost('luas_objek_divestasi');
+        // $data['nilai_objek_divestasi']  = $this->request->getPost('nilai_objek_divestasi');
+        // $data['nilai_buku']  = $this->request->getPost('nilai_buku_divestasi');
+        // $data['realisasi_pembayaran']  = $this->request->getPost('nilai_realisasi_divestasi');
+        // $data['jenis_rkap']  = $this->request->getPost('jenis_rkap');
+        // $data['lokasi_objek_divestasi']  = $this->request->getPost('lokasi_objek_divestasi');
+
+
+        // $assets     = $this->request->getPost('assets');
+        // $nilai_buku = $this->request->getPost('nilai_buku_aset');
+        // $nilai_objek= $this->request->getPost('nilai_objek_aset');
+        // $luas       = $this->request->getPost('luas_aset');
+
+        
+
+        // $data['id_maia_masterlists'] =json_encode(array_column($assets, 0));
+        // $data['nilai_buku_aset'] =json_encode($nilai_buku);
+        // $data['nilai_objek_aset'] =json_encode($nilai_objek);
+        // $data['luas_aset'] =json_encode($luas);
+
+            
+        // $data['metode']                 = $this->request->getPost('metode');
+        // $data['start_date']             = $this->request->getPost('start_date');
+        // $data['target_date']            = $this->request->getPost('target_date');
+        // $data['id_divestasi']           = $this->request->getPost('id_divestasi');
+        // if($this->request->getPost('asets')!='')$data['id_maia_masterlists']= implode(',',$this->request->getPost('asets'));
+        // $data['created_at']             = date('Y-m-d H:i:s');
+        // $data['unit_id_user']           = session()->get('unit_id');
+
+        // $model = new M_Divestasi();
+        // $data['id_divestasi']           = $model->insert_divestasi_data($data);
+
+        // $dataPesan['id_divestasi']      = $data['id_divestasi'];
+        // $dataPesan['objek_divestasi']   = $data['objek_divestasi'];
+        // $dataPesan['tglTarget']         = $data['target_date'];
+
+        // $dataPesan['id_user']           = session()->get('user_id');
+        // $dataPesan['jenis']             = 'registrasiDivestasi';
+        // $dataPesan['phoneNumber']       = $this->getNoWa(session()->get('user_id'))->user_telp;
+        // $dataPesan['tglKirim']          = date('Y-m-d');
+
+        // // $this->create_notif_wa($dataPesan);
+        // echo json_encode($data);
 
     }
 
