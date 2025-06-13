@@ -123,7 +123,7 @@ class Map_aiModel extends Model
         {
             // API Key OpenAI
             $url = "https://api.openai.com/v1/chat/completions";
-            $apiKey = "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";
+            $apiKey = env('OPENAI_API_KEY');
 
             // Endpoint OpenAI            
 
@@ -215,7 +215,7 @@ class Map_aiModel extends Model
     // public function fetch_ai_chatGPT($role_system, $pertanyaan) {//untuk output narasi/text
     //     // API Key OpenAI
     //         $url = "https://api.openai.com/v1/chat/completions";
-    //         $apiKey = "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";
+    //         $apiKey = env('OPENAI_API_KEY');
 
     //         // Endpoint OpenAI            
 
@@ -289,8 +289,8 @@ class Map_aiModel extends Model
 
 
     function ai_jawab_chatGpt($pertanyaan){
-        $api_key = "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";
-        $assistant_id = "asst_8WveyY29twUs1v8RQfudDm16";
+        $api_key = env('OPENAI_API_KEY');
+        $assistant_id = env('assistant_id');
 
         // 1. Membuat Thread Baru
         $thread_url = "https://api.openai.com/v1/threads";
