@@ -12,7 +12,7 @@
 
 		//tabel divestasi_data
 	    protected $dataTable = 'divestasi_data'; 
-	    protected $dataAllowedFields = ['id_divestasi', 'objek_divestasi','luas_objek_divestasi','nilai_objek_divestasi','jenis_rkap','lokasi_objek_divestasi','id_maia_masterlists', 'nilai_buku_aset','nilai_objek_aset','luas_aset','metode','start_date','target_date', 'created_at','current_start_log','current_target_log','current_status','unit_id_user','except_tahapan']; 
+	    protected $dataAllowedFields = ['id_divestasi', 'objek_divestasi','luas_objek_divestasi','nilai_objek_divestasi','jenis_rkap','lokasi_objek_divestasi','id_maia_masterlists', 'nilai_buku_aset','nilai_njop','nilai_kjpp','satuan_aset','tgl_nilai_buku','tgl_njop','tgl_kjpp','jenis_aset','jumlah_aset','metode','start_date','target_date', 'created_at','current_start_log','current_target_log','current_status','unit_id_user','except_tahapan']; 
 
 
 	    public function insert_divestasi_data2($data)
@@ -36,23 +36,36 @@
 		            'metode'             => $data['metode'],
 		            'start_date'         => $data['start_date'],
 		            'target_date'        => $data['target_date'],
-		            'luas_objek_divestasi' 	=> $data['luas_objek_divestasi'],
-		            'nilai_objek_divestasi'	=> $data['nilai_objek_divestasi'],
-		            'nilai_buku' 			=> $data['nilai_buku'],
-		            'realisasi_pembayaran'	=> $data['realisasi_pembayaran'],
-		            'unit_id_user'=> $data['unit_id_user'],
-		            'jenis_rkap'=> $data['jenis_rkap'],
+		            //'luas_objek_divestasi' 	=> $data['luas_objek_divestasi'],
+		            //'nilai_objek_divestasi'	=> $data['nilai_objek_divestasi'],
+
+		            'jenis_aset'		 => $data['jenis_aset'],
+		            'jumlah_aset'		 => $data['jumlah_aset'],
+		            'satuan_aset' 		 => $data['satuan_aset'],
+
+		            'nilai_buku_aset' 	 => $data['nilai_buku_aset'],
+		            'nilai_njop' 		 => $data['nilai_njop'],
+		            'nilai_kjpp' 		 => $data['nilai_kjpp'],
+
+		            'tgl_nilai_buku' 	 => $data['tgl_nilai_buku'],
+		            'tgl_njop' 			 => $data['tgl_njop'],
+		            'tgl_kjpp' 			 => $data['tgl_kjpp'],
+
+		            //'realisasi_pembayaran'	=> $data['realisasi_pembayaran'],
+		            'unit_id_user'		 => $data['unit_id_user'],
+		            'jenis_rkap'		 => $data['jenis_rkap'],
 		            'lokasi_objek_divestasi'=> $data['lokasi_objek_divestasi'],
 
 		            'luas_aset' 		=> $data['luas_aset'],
 		            'nilai_objek_aset'	=> $data['nilai_objek_aset'],
 		            'nilai_buku_aset' 	=> $data['nilai_buku_aset'],
 		        ];
+
 	        }else{
 	        	$updateFields = [
-		        	'current_start_log' 	=> $data['current_start_log'],
-		            'current_target_log'	=> $data['current_target_log'],
-		            'current_status'     	=> $data['current_status']
+		        	'current_start_log'  => $data['current_start_log'],
+		            'current_target_log' => $data['current_target_log'],
+		            'current_status'     => $data['current_status']
 	       		];
 	        }
 
