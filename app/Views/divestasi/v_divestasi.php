@@ -260,7 +260,7 @@ $encrypter = \Config\Services::encrypter();
                         <tr style="text-align: center;" role="row">
                           <th>No.</th>
                           <th>Objek Divestasi</th>
-                          <th>Luas Objek<br>Divestasi (Meter)</th>
+                          <!-- <th>Luas Objek<br>Divestasi (Meter)</th> -->
                           <th>Lokasi</th>
                           <th>Nilai Buku (Rp.)</th>
                           <th>Nilai Objek Divestasi (Rp.)</th>
@@ -536,17 +536,17 @@ $encrypter = \Config\Services::encrypter();
           }
         },
         
-        {
-          "data": "luas_objek_divestasi",
-          render: function(data, type, row) {
-                // Format angka dengan koma sebagai pemisah ribuan
-                return new Intl.NumberFormat('id-ID', {
-                    style: 'decimal',
-                    minimumFractionDigits: 0
-                }).format(data);
-            },
-            className: "text-end"
-        },
+        // {
+        //   "data": "luas_objek_divestasi",
+        //   render: function(data, type, row) {
+        //         // Format angka dengan koma sebagai pemisah ribuan
+        //         return new Intl.NumberFormat('id-ID', {
+        //             style: 'decimal',
+        //             minimumFractionDigits: 0
+        //         }).format(data);
+        //     },
+        //     className: "text-end"
+        // },
 
         {
           "data": "master_region_nama",
