@@ -1156,7 +1156,7 @@
 				    placeholder: "Pilih aset...",
 				    "language": {
 					       "noResults": function(){
-					           return "No Results Found <a href='#' class='btn btn-danger'>Use it anyway</a>";
+					           return "No Results Found";
 					       }
 					   },
 					    escapeMarkup: function (markup) {

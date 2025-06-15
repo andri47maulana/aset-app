@@ -168,6 +168,7 @@
 		    $query = $this->db->table('v_maia_masterlist as m')
 		                      ->select("*, CONCAT(m.deskripsi_aset, ' [', m.nmr_aset, ']') AS label_aset")
 		                      ->like('m.deskripsi_aset', $search)
+		                      ->orLike('m.nmr_aset', $search)
 		                      ->limit(10);
 
 		    if (session()->get('role_id') != 20) {
@@ -175,6 +176,7 @@
 		    }
 
 		    $result = $query->get(); // Execute query first
+		    //var_dump($this->db->getLastQuery()->getQuery());
 		    return $result->getResult(); // Fetch results
 		}
 
