@@ -684,14 +684,16 @@ class C_divestasi extends BaseController
 
     private function progressAll($id_divestasi=''){
         $totalUpload = $this->countTotalUpload($id_divestasi);
-        $totalKebutuhanDokumen = $this->countTotalKebutuhanDokumen($id_divestasi);  
-
-        // var_dump($totalUpload);
-        // var_dump($totalKebutuhanDokumen);
+        $totalKebutuhanDokumen = $this->countTotalKebutuhanDokumen($id_divestasi); 
 
         $data['selesai']=0;
         foreach($totalUpload as $id => $jml){
-            $data['persen'][$id]= number_format($totalUpload[$id]/$totalKebutuhanDokumen[$id]*100,2);
+            if(count($totalKebutuhanDokumen)==0){
+                $data['persen'][$id]= 0;
+            }else{
+                $data['persen'][$id]= number_format($totalUpload[$id]/$totalKebutuhanDokumen[$id]*100,2);
+            }
+            
             if($data['persen'][$id]>100){
                 $data['persen'][$id]=100;
             }
