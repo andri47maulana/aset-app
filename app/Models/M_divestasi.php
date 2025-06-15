@@ -7,7 +7,7 @@
 	{
 	    protected $table = 'divestasi_log';
 	    protected $primaryKey = 'id_log_divestasi';
-	    protected $allowedFields = ['id_divestasi','file_name', 'kategori','tahapan','status','created_at','start_log','target_log','keterangan','approval_status','approval_date'];
+	    protected $allowedFields = ['id_divestasi','file_name', 'kategori','tahapan','status','created_at','start_log','target_log','keterangan','approval_status','approval_date','nominal'];
 
 
 		//tabel divestasi_data
@@ -80,6 +80,24 @@
 	    }
 
 
+	    public function insert_log_action($data)
+		{
+		    if (!is_array($data) || empty($data)) {
+		        return 'error: Invalid or empty data provided.';
+		    }
+
+		    $db = \Config\Database::connect();
+		    $builder = $db->table('divestasi_log_action');
+
+		    if (!$builder->insert($data)) {
+		        log_message('error', 'Insert log action failed: ' . json_encode($builder->getError()));
+		        return 'error: Insert log action failed: ' . json_encode($builder->getError());
+		    }
+		    //echo $this->db->getLastQuery()->getQuery();
+		    return $db->insertID();
+		}
+
+
 	    public function update_divestasi($id, $data) {
 		    $db = \Config\Database::connect();
 		    $builder = $db->table($this->dataTable);
@@ -146,8 +164,8 @@
 
 		public function searchAset($search = "") {
 			//var_dump(session()->get('unit_id'));
-		    $query = $this->db->table('maia_masterlist as m')
-		                      ->select("*, CONCAT(m.deskripsi_aset, ' [', m.nomor_aset, ']') AS label_aset")
+		    $query = $this->db->table('v_maia_masterlist as m')
+		                      ->select("*, CONCAT(m.deskripsi_aset, ' [', m.nmr_aset, ']') AS label_aset")
 		                      ->like('m.deskripsi_aset', $search)
 		                      ->limit(10);
 
@@ -162,9 +180,9 @@
 
 
 		public function getDataAset($id_maia_masterlists=""){
-			$result = $this->db->table('maia_masterlist as m') 
-		                   ->select(" *, concat(m.deskripsi_aset,' [',m.nomor_aset,']') as label_aset")                  
-		                   ->whereIn('id', $id_maia_masterlists)
+			$result = $this->db->table('v_maia_masterlist as m') 
+		                   ->select(" *, concat(m.deskripsi_aset,' [',m.nmr_aset,']') as label_aset")                  
+		                   ->whereIn('nmr_aset', $id_maia_masterlists)
 		                   ->limit(10)
 		                   ->get()
 		                   ->getResult();   
@@ -180,6 +198,9 @@
 	        }
 	        return implode(', ', $clauses);
 	    }
+
+
+
 
 
 

@@ -13,7 +13,7 @@ use App\Models\M_maia_kml;
 use App\Models\M_maia_masterlist;
 use App\Models\M_divestasi;
 
-//error_reporting(~E_ALL & ~E_NOTICE);
+error_reporting(~E_ALL & ~E_NOTICE);
 
 class C_divestasi extends BaseController
 {
@@ -316,7 +316,8 @@ class C_divestasi extends BaseController
         $model = new M_Divestasi();
         $data['id_divestasi']           = $model->insert_divestasi_data($data);
 
-        echo json_encode($data);
+        // echo json_encode($data);
+        return $this->response->setJSON($data);
 
 
         // $data['luas_objek_divestasi']   = $this->request->getPost('luas_objek_divestasi');
@@ -376,6 +377,7 @@ class C_divestasi extends BaseController
         $fileStatus = $this->request->getPost('file_status');
         $uploadedFile = $this->request->getFile('file_upload');
         $tahapan = $this->request->getPost('tahapan');
+        $nominal = $this->request->getPost('nominal_bayar');
         $tahapan_label = $this->request->getPost('tahapan_label');
 
 
@@ -396,9 +398,11 @@ class C_divestasi extends BaseController
                 'kategori' => $fileGroup,
                 'tahapan'=>$tahapan,
                 'status'=>$fileStatus,
+                'nominal'=>$nominal,
                 'created_at' => date('Y-m-d H:i:s'),
             ]);
 
+            //echo $this->db->getLastQuery()->getQuery();
 
             $dataPesan['id_divestasi']    = $id_divestasi;
             $dataPesan['objek_divestasi'] = $objek_divestasi;
@@ -413,7 +417,6 @@ class C_divestasi extends BaseController
             $dataPesan['tglKirim']        = date('Y-m-d');
 
             $this->create_notif_wa($dataPesan);
-
             // Redirect dengan pesan sukses
             return redirect()->back()->with('success', 'File berhasil diunggah.')->with('tab',$tahapan);
         } catch (\Exception $e) {
@@ -537,7 +540,7 @@ class C_divestasi extends BaseController
             return $this->response->setJSON([
                 'items' => array_map(function($item) {
                     return [
-                        'id' => $item->id,
+                        'id' => $item->nmr_aset,
                         'text' => $item->label_aset // Ganti dengan nama kolom yang sesuai
                     ];
                 }, $results)
@@ -555,7 +558,7 @@ class C_divestasi extends BaseController
         return $this->response->setJSON([
             'items' => array_map(function($item) {
                 return [
-                    'id' => $item->id,
+                    'id' => $item->nmr_aset,
                     'text' => $item->label_aset
                 ];
             }, $results)
@@ -647,6 +650,9 @@ class C_divestasi extends BaseController
     private function progressAll($id_divestasi=''){
         $totalUpload = $this->countTotalUpload($id_divestasi);
         $totalKebutuhanDokumen = $this->countTotalKebutuhanDokumen($id_divestasi);  
+
+        // var_dump($totalUpload);
+        // var_dump($totalKebutuhanDokumen);
 
         $data['selesai']=0;
         foreach($totalUpload as $id => $jml){
@@ -791,12 +797,29 @@ class C_divestasi extends BaseController
 
 
 
-    public function save_log_action(){
-        // Simpan log ke database
-            $post  = $this->request->getPost();
-            $model = new M_Divestasi();
+    public function save_log_action($data)
+    {
+        $model = new M_Divestasi();
+        // Simpan data ke database via model
+        $result = $model->insert_log_action($data);
 
+        if (is_numeric($result)) {
+            // Jika berhasil, return ID insert
+            return json_encode([
+                "status" => "success",
+                "message" => "Data berhasil disimpan",
+                "insert_id" => $result
+            ]);
+        } else {
+            // Jika gagal, tampilkan error
+            return json_encode([
+                "status" => "error",
+                "message" => "Gagal menyimpan data",
+                "desc" => $result // Sudah berupa string error dari model
+            ]);
         }
+    }
+
 
     public function update_log(){
         // Simpan log ke database
@@ -809,13 +832,18 @@ class C_divestasi extends BaseController
                 'approval_date'=> date('Y-m-d H:i:s')
             ];
 
-
-
             //
             $model->update($id,$data);
+            $data_log['id_log']=$id;
+            $data_log['action']=$post['status'];
+            $data_log['info']=$post['keterangan'];
+            $data_log['created_date'] = date('Y-m-d H:i:s');
+
+
+            $insert_log = $this->save_log_action($data_log);
 
             //echo json_encode($this->db->getLastQuery()->getQuery());
-            //echo json_encode($data);
+            echo $insert_log;
     }
 
     public function except_add(){

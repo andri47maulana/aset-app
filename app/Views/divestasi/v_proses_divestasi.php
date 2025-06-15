@@ -323,6 +323,7 @@
 											            <div class="d-flex align-items-center">
 												            <input type="text" value="<?= json_decode($divestasi_data->nilai_kjpp)[0] ?>" class="form-control nilai_kjpp" placeholder="Rp. ">
 												            <button class="btn btn-success btn-sm btn-add-aset" data-id="1" onclick="add_aset(this)"><i class="fa fa-plus"></i></button>
+												            <button class="btn btn-danger btn-sm btn-add-aset" data-id="1" onclick="delete_aset(this)"><i class="fa fa-minus"></i></button>
 													    </div>
 												    		<span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Tgl. Penilaian:<input class="tgl_kjpp" type='date' value='<?= (json_decode($divestasi_data->tgl_kjpp)[0])?? date('Y-m-d'); ?>' /></span>
 											        </div>
@@ -410,6 +411,7 @@
 												            <div class="d-flex align-items-center">
 													            <input type="text" value="<?= json_decode($divestasi_data->nilai_kjpp)[$i] ?>" class="form-control nilai_kjpp" placeholder="Rp. ">
 													            <button class="btn btn-success btn-sm btn-add-aset" data-id="<?= $i+1?>" onclick="add_aset(this)"><i class="fa fa-plus"></i></button>
+												            	<button class="btn btn-danger btn-sm btn-add-aset" data-id="<?= $i+1?>" onclick="delete_aset(this)"><i class="fa fa-minus"></i></button>
 													            <br>
 														    </div>
 												    		<span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Tgl. Penilaian:<input class="tgl_kjpp" type='date' value='<?= (json_decode($divestasi_data->tgl_kjpp)[$i])?? date('Y-m-d'); ?>' /></span>
@@ -487,7 +489,14 @@
 
 											        <div class="me-2 col-md-3 form-group">
 											            <span class="flex-grow-1 me-2" style="text-align: right; display: flow;">
-											            	<h1>Rp. <?= number_format(($divestasi_data->realisasi_pembayaran))?></h1>
+
+											            	<?php
+											            		$total_bayar=0;
+											            		foreach($divestasi_log as $d){
+											            			$total_bayar+=$d['nominal'];
+											            		}
+											            	?>
+											            	<h1>Rp. <?= number_format(($total_bayar))?></h1>
 													    </span>
 											        </div>
 												</div>
@@ -602,6 +611,11 @@
 																				    <ul class="timeline">
 																				      <?php
 																				      		//var_dump($divestasi_log);
+
+																				      		$status_['']='';
+																				      		$status_['approve']="<span class='btn btn-xs btn-success'>Approve</span>";
+																				      		$status_['reject']="<span class='btn btn-xs btn-warning'>Reject</span>";
+
 																				      		foreach($divestasi_log as $d){
 																				      			$d = (object) $d;
 																				      			$status="";
@@ -625,7 +639,8 @@
 																							          
 																							          <h5 class="timeline-title">'.$d->kategori.'</h5>
 																							          '.$dokumen.'
-																							        </div>
+																										<span class="timeline-date d-flex justify-content-end">'.$status_[strtolower($d->approval_status)].'<br><p style="font-size:8px">'.$d->approval_date.'</p></span>																							        </div>
+
 																							      </li>';
 																				      		}
 
@@ -715,6 +730,11 @@
 																						            <option value="ttd">Ditandatangani</option>
 																						        	?>
 																						        </select>
+
+																						    <div class="form-group" id="input_bayar-<?= $id_tahapan?>" style="display: none;">
+																						        <label for="nominal">Jumlah Bayar</label><input type="number" placeholder="Rp." id="nominal_bayar-<?= $id_tahapan?>" name="nominal_bayar" class="form-control" />
+																						    </div>
+
 																						    <button type="submit" class="btn btn-success" <?= ($divestasi_data->current_status!=$tahapan)?'':''?>>Upload</button>
 																						</form>
 																	                	
@@ -881,46 +901,55 @@
 
 					$(".jenis_aset").each(function(){
 						if(data['jenis_aset']==undefined){data['jenis_aset']=[]}
+						if($(this).val()=='')$(this).val(0);
 						data['jenis_aset'].push($(this).val());
 					});
 
 					$(".jumlahAset").each(function(){
 						if(data['jumlah_aset']==undefined){data['jumlah_aset']=[]}
+						if($(this).val()=='')$(this).val(0);
 						data['jumlah_aset'].push($(this).val());
 					});
 
 					$(".satuanAset").each(function(){
 						if(data['satuan_aset']==undefined){data['satuan_aset']=[]}
+						if($(this).val()=='')$(this).val(0);
 						data['satuan_aset'].push($(this).val());
 					});
 
 					$(".nilaiBukuAset").each(function(){
 						if(data['nilai_buku_aset']==undefined){data['nilai_buku_aset']=[]}
+						if($(this).val()=='')$(this).val(0);
 						data['nilai_buku_aset'].push($(this).val());
 					});
 
 					$(".tgl_nilai_buku").each(function(){
 						if(data['tgl_nilai_buku']==undefined){data['tgl_nilai_buku']=[]}
+						if($(this).val()=='')$(this).val(0);
 						data['tgl_nilai_buku'].push($(this).val());
 					});
 
 					$(".nilai_njop").each(function(){
 						if(data['nilai_njop']==undefined){data['nilai_njop']=[]}
+						if($(this).val()=='')$(this).val(0);
 						data['nilai_njop'].push($(this).val());
 					});
 
 					$(".tgl_njop").each(function(){
 						if(data['tgl_njop']==undefined){data['tgl_njop']=[]}
+						if($(this).val()=='')$(this).val(0);
 						data['tgl_njop'].push($(this).val());
 					});
 
 					$(".nilai_kjpp").each(function(){
 						if(data['nilai_kjpp']==undefined){data['nilai_kjpp']=[]}
+						if($(this).val()=='')$(this).val(0);
 						data['nilai_kjpp'].push($(this).val());
 					});
 
 					$(".tgl_kjpp").each(function(){
 						if(data['tgl_kjpp']==undefined){data['tgl_kjpp']=[]}
+						if($(this).val()=='')$(this).val(0);
 						data['tgl_kjpp'].push($(this).val());
 					});
 
@@ -968,6 +997,16 @@
 					// });
 
 
+					let semuaTerisi = data['assets'].every(d => d.length > 0);
+
+					if (!semuaTerisi) {
+					  alert('Harap lengkapi penginputan data!');
+					  return;
+					}
+
+					
+
+
                 	$.ajax({
 	                    method: "post",
 	                    url: "<?= base_url() ?>/C_divestasi/save",
@@ -983,7 +1022,7 @@
 	                            showCancelButton: false,
 	                            showConfirmButton: false
 	                        });
-	                        window.location.href = "<?= base_url('C_divestasi') ?>/proses/"+resp.id_divestasi;
+	                        if(resp.id_divestasi>0)window.location.href = "<?= base_url('C_divestasi') ?>/proses/"+resp.id_divestasi;
 	                    },
 	                    error: function(xhr, status, error) {
 	                        Swal.fire({
@@ -1057,35 +1096,88 @@
 		        	if(opt=="-->"){
 		        		$("#file-add"+id).show();
 		        	}
+
+		        	if(opt=="BA dan Bukti Pembayaran"){
+		        		$("#input_bayar-"+id).show();
+		        	}
 		        }
 		    </script>
 
 		    <script type="text/javascript">
             $(document).ready(function() {
 		    	 	
-				    $('.selectAset').select2({
-					    ajax: {
-					        url: '<?= base_url("C_divestasi/getAsetMaia") ?>',
-					        dataType: 'json', 
-					        delay: 250, 
-					        data: function(params) {
-					        	console.log
-					            return {
-					                search: params.term
-					            };
-					        },
-					        processResults: function(data) {
-					            return {
-					                results: data.items
-					            };
-					        }
-					    },
-					    placeholder: "Pilih aset...",
-					});
+				    // $('.selectAset').select2({
+					//     ajax: {
+					//         url: '<?= base_url("C_divestasi/getAsetMaia") ?>',
+					//         dataType: 'json', 
+					//         delay: 250, 
+					//         data: function(params) {
+					//         	console.log
+					//             return {
+					//                 search: params.term
+					//             };
+					//         },
+					//         processResults: function(data) {
+					//             return {
+					//                 results: data.items
+					//             };
+					//         }
+					//     },
+					//     placeholder: "Pilih aset...",
+					//     language: {
+					// 	    noResults: function () {
+					// 	      return `
+					// 	        <div style="display: flex; justify-content: space-between; align-items: center;">
+					// 	          <span>Tidak ditemukan</span>
+					// 	          <button type="button" class="btn-add-data" style="margin-left: 10px; color: blue; cursor: pointer;">Tambah Data</button>
+					// 	        </div>
+					// 	      `;
+					// 	    }
+					// 	  },
+					// 	  escapeMarkup: function (markup) {
+					// 	    return markup;
+					// 	  }
+					// });
+            	            		console.log($('.selectAset').select2());
+
+            	$('.selectAset').select2({
+				    ajax: {
+				        url: '<?= base_url("C_divestasi/getAsetMaia") ?>',
+				        dataType: 'json',
+				        delay: 250,
+				        data: function(params) {
+				            return {
+				                search: params.term
+				            };
+				        },
+				        processResults: function(data) {
+				            return {
+				                results: data.items
+				            };
+				        }
+				    },
+				    placeholder: "Pilih aset...",
+				    "language": {
+					       "noResults": function(){
+					           return "No Results Found <a href='#' class='btn btn-danger'>Use it anyway</a>";
+					       }
+					   },
+					    escapeMarkup: function (markup) {
+					        return markup;
+					    }
+				});
+
+				$(document).on('click', '.btn-add-data', function () {
+				    // Misal buka modal atau redirect ke form tambah aset
+				    // Contoh pakai modal Bootstrap
+				    $('#modalTambahAset').modal('show');
+				});
+
 
 
 					//set selected value dari database
 					let id_maia ='<?= ($divestasi_data->id_maia_masterlists)?>';
+						            console.log(id_maia);
 					if(id_maia!=''){
 						$.ajax({
 						    url: '<?= base_url("C_divestasi/getOptionAset") ?>', 
@@ -1096,6 +1188,7 @@
 						    },
 						    success: function (data) {
 						    	let i=0;
+						            console.log(data);
 						        data.items.forEach(function (item) {
 						            var option = new Option(item.text, item.id, true, true);
 						            $('#selectAset'+i).append(option).trigger('change');
@@ -1159,7 +1252,6 @@
 		                    cache: false,
 		                    dataType: "json",
 		                    success: function(resp) {
-		                    	console.log(resp);
 		                        Swal.fire({
 		                            icon: 'success',
 		                            title: ' Berhasil !',
@@ -1176,12 +1268,13 @@
 		                    },
 		                    error: function(xhr, status, error) {
 		                    	$("#modal_action").modal("hide");
-
+		                    	console.log(status);
+		                    	console.log(error);
 		                    	const url = new URL(window.location.href);
 								url.searchParams.set('tab', 'progress'); 
 
-								window.history.pushState({}, '', url);
-								window.location.href = url.toString();
+								//window.history.pushState({}, '', url);
+								//window.location.href = url.toString();
 		                        // Swal.fire({
 		                        //     icon: 'error',
 		                        //     title: ' Gagal !',
@@ -1200,10 +1293,19 @@
 			function add_aset(that){
 						let i = $(".btn-add-aset").length+1;
 						let cloned = $(that).closest(".multiple_aset").clone();
+						
+						
+						//cloned.find('input').val('');
+						cloned.find('.optionAset').html('<select id="selectAset'+i+'" name="asets[]" multiple="multiple" class="form-control selectAset"></select>');
+						let today = new Date().toISOString().split('T')[0];
+						let data_date=cloned.find('input[type="date"]');
+						data_date.each(function(d) {
+						  	console.log($(this).val());
+						});
+
 						cloned.insertAfter($(that).closest(".multiple_aset"));
 						cloned.find('.btn-add-aset').attr('data-id',i);
-						cloned.find('.optionAset').html('<select id="selectAset'+i+'" name="asets[]" multiple="multiple" class="form-control selectAset"></select>');
-						cloned.find('input').val('');
+
 						$('.selectAset').select2({
 						    ajax: {
 						        url: '<?= base_url("C_divestasi/getAsetMaia") ?>',
@@ -1223,6 +1325,12 @@
 						    placeholder: "Pilih aset...",
 						});
 	
+			}
+
+			function delete_aset(that){
+				if (confirm('Yakin ingin menghapus data ini?')) {
+			        $(that).closest(".multiple_aset").remove();
+			    }
 			}
 
 
