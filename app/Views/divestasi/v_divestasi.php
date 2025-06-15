@@ -616,8 +616,9 @@ $encrypter = \Config\Services::encrypter();
 
                 if(persen[row.id_divestasi]!==undefined){
                     
-                    if(persen[row.id_divestasi]==100){
+                    if(persen[row.id_divestasi]>=100){
                         circle_color="#09b954";
+                        persen[row.id_divestasi]=100;
                     }
                     
                     persen[row.id_divestasi]= persen[row.id_divestasi].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });

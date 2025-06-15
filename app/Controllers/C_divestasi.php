@@ -293,6 +293,11 @@ class C_divestasi extends BaseController
         $nilai_buku_aset= $this->request->getPost('nilai_buku_aset');
         $data['nilai_buku_aset'] =json_encode($nilai_buku_aset);
 
+        $data['nilai_buku']=0;
+        foreach($nilai_buku_aset as $nbuku){
+            $data['nilai_buku']+=$nbuku;
+        }
+
         $tgl_nilai_buku= $this->request->getPost('tgl_nilai_buku');
         $data['tgl_nilai_buku'] =json_encode($tgl_nilai_buku);
 
@@ -304,6 +309,11 @@ class C_divestasi extends BaseController
 
         $nilai_kjpp= $this->request->getPost('nilai_kjpp');
         $data['nilai_kjpp'] =json_encode($nilai_kjpp);
+
+        $data['nilai_objek_divestasi']=0;
+        foreach($nilai_kjpp as $nkjpp){
+            $data['nilai_objek_divestasi']+=$nkjpp;
+        }
 
         $tgl_kjpp= $this->request->getPost('tgl_kjpp');
         $data['tgl_kjpp'] =json_encode($tgl_kjpp);
@@ -441,6 +451,21 @@ class C_divestasi extends BaseController
 
         $data['divestasi_data']     = $model->getDivestasi($id_divestasi);
         $data['divestasi_log']      = $model->getDivestasiLog($id_divestasi);
+
+        $total_bayar=0;
+        foreach($data['divestasi_log'] as $d){
+            if($d['approval_status']=='approve')$total_bayar+=$d['nominal'];
+        }
+
+        if($data['divestasi_data']->realisasi_pembayaran!=$total_bayar){
+            //echo $data['divestasi_data']->realisasi_pembayaran."+++".$total_bayar;
+            $data_upd['realisasi_pembayaran'] = $total_bayar;
+            $model->update_divestasi($id_divestasi,$data_upd);
+            $data['divestasi_data']->realisasi_pembayaran= $total_bayar;
+        }
+
+
+
         $data['region']             = $asetModel->getRegionSession();
 
         $data['progress_divestasi'] = $this->progressAll($id_divestasi);
@@ -657,6 +682,10 @@ class C_divestasi extends BaseController
         $data['selesai']=0;
         foreach($totalUpload as $id => $jml){
             $data['persen'][$id]= number_format($totalUpload[$id]/$totalKebutuhanDokumen[$id]*100,2);
+            if($data['persen'][$id]>100){
+                $data['persen'][$id]=100;
+            }
+
             if($data['persen'][$id]==100){
                 $data['selesai']++;
             }

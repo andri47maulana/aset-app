@@ -12,7 +12,7 @@
 
 		//tabel divestasi_data
 	    protected $dataTable = 'divestasi_data'; 
-	    protected $dataAllowedFields = ['id_divestasi', 'objek_divestasi','luas_objek_divestasi','nilai_objek_divestasi','jenis_rkap','lokasi_objek_divestasi','id_maia_masterlists', 'nilai_buku_aset','nilai_njop','nilai_kjpp','satuan_aset','tgl_nilai_buku','tgl_njop','tgl_kjpp','jenis_aset','jumlah_aset','metode','start_date','target_date', 'created_at','current_start_log','current_target_log','current_status','unit_id_user','except_tahapan']; 
+	    protected $dataAllowedFields = ['id_divestasi', 'objek_divestasi','luas_objek_divestasi','nilai_objek_divestasi','jenis_rkap','lokasi_objek_divestasi','id_maia_masterlists','nilai_buku','nilai_buku_aset','nilai_njop','nilai_kjpp','satuan_aset','tgl_nilai_buku','tgl_njop','tgl_kjpp','jenis_aset','jumlah_aset','metode','start_date','target_date', 'created_at','current_start_log','current_target_log','current_status','unit_id_user','except_tahapan']; 
 
 
 	    public function insert_divestasi_data2($data)
@@ -36,8 +36,9 @@
 		            'metode'             => $data['metode'],
 		            'start_date'         => $data['start_date'],
 		            'target_date'        => $data['target_date'],
+		            'nilai_buku'		 => $data['nilai_buku'],
 		            //'luas_objek_divestasi' 	=> $data['luas_objek_divestasi'],
-		            //'nilai_objek_divestasi'	=> $data['nilai_objek_divestasi'],
+		            'nilai_objek_divestasi'	=> $data['nilai_objek_divestasi'],
 
 		            'jenis_aset'		 => $data['jenis_aset'],
 		            'jumlah_aset'		 => $data['jumlah_aset'],

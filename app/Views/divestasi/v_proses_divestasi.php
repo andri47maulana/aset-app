@@ -489,14 +489,7 @@
 
 											        <div class="me-2 col-md-3 form-group">
 											            <span class="flex-grow-1 me-2" style="text-align: right; display: flow;">
-
-											            	<?php
-											            		$total_bayar=0;
-											            		foreach($divestasi_log as $d){
-											            			$total_bayar+=$d['nominal'];
-											            		}
-											            	?>
-											            	<h1>Rp. <?= number_format(($total_bayar))?></h1>
+											            	<h1>Rp. <?= number_format($divestasi_data->realisasi_pembayaran)?></h1>
 													    </span>
 											        </div>
 												</div>
@@ -800,7 +793,7 @@
 																				                    	if($file['tahapan']!=$id_tahapan)continue; ?>
 																				                        <tr>
 																				                            <td><?= $file['file_name']; ?><br><center style="font-size: 8px"><?= $file['created_at']; ?></center></td>
-																				                            <td><?= $file['kategori']; ?></td>
+																				                            <td><?= $file['kategori']; ?><br><?= $file['nominal']; ?></td>
 																				                            <td>
 																				                            	<center class="<?= $color[$file['approval_status']]; ?>"><?= $file['approval_status']; ?>
 																				                            	</center><br>
