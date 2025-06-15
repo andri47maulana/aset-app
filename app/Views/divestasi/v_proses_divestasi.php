@@ -232,8 +232,12 @@
 													        	<?php foreach ($region as $reg) {
 											                        $selected='';
 											                        if($divestasi_data->lokasi_objek_divestasi==$reg['master_region_kode']) $selected="selected";
+
+											                        if($kode_region=='ADM' or $kode_region=='HO' or $kode_region==$reg['master_region_kode']){
+											                           echo '<option '.$selected.' value="'.$reg['master_region_kode'].'">'.$reg['master_region_nama'].'</option>';
+											                        }
 											                        
-											                        echo '<option '.$selected.' value="'.$reg['master_region_kode'].'">'.$reg['master_region_nama'].'</option>';
+											                        //echo '<option '.$selected.' value="'.$reg['master_region_kode'].'">'.$reg['master_region_nama'].'</option>';
 											                      }; ?>
 																<!-- <option value="RK01" <?= ($divestasi_data->lokasi_objek_divestasi == "RK01") ? "selected" : "" ?>>PTPN 1 Regional 1</option>
 													        	<option value="RK02" <?= ($divestasi_data->lokasi_objek_divestasi == "RK02") ? "selected" : "" ?>>PTPN 1 Regional 2 </option> -->

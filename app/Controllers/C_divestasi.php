@@ -27,22 +27,10 @@ class C_divestasi extends BaseController
 
     public function index()
     {
+
         if (session()->get('username') == '') {
             session()->setFlashdata('gagal', 'Anda belum login');
             return redirect()->to(base_url('C_login'));
-        }
-
-
-        if(!isset($_GET['lokasi']) || $_GET['lokasi']!='RK01' ){
-            if (session()->get('username') == 'user1_divestasi'){
-                //return redirect()->to(base_url('C_divestasi?lokasi=RK01'));
-            }            
-        }
-
-        if(!isset($_GET['lokasi']) || $_GET['lokasi']!='RK02' ){
-            if (session()->get('username') == 'user2_divestasi'){
-                //return redirect()->to(base_url('C_divestasi?lokasi=RK02'));
-            }            
         }
         
         $asetModel = new M_aset_manajemen();
@@ -53,7 +41,22 @@ class C_divestasi extends BaseController
         // $data['asetclass'] = $asetModel->getAsetClass();
         // $data['asetgroup'] = $asetModel->getAsetGroup();
         $data['region'] = $asetModel->getRegionSession();
+        $reg=array();
+        foreach($data['region'] as $rg){
+            $reg[$rg['id_region']]=$rg['master_region_kode'];
+        }
+
+        if($reg[session()->get('id_region')]=='ADM' or $reg[session()->get('id_region')]=='HO' ){
+
+        }else{
+            $prv=$reg[session()->get('id_region')];
+            if(!isset($_GET['lokasi']) || $_GET['lokasi']!=$prv )return redirect()->to(base_url('C_divestasi?lokasi='.$prv));
+        };
+
+
         $data['id_region'] = session()->get('id_region');
+        $data['kode_region'] = $reg[session()->get('id_region')];
+
         $data['dash_progress'] = $this->countByGroupTahapan();
         $data['progress_divestasi'] = $this->progressAll();
 
@@ -467,6 +470,13 @@ class C_divestasi extends BaseController
 
 
         $data['region']             = $asetModel->getRegionSession();
+
+        $reg=array();
+        foreach($data['region'] as $rg){
+            $reg[$rg['id_region']]=$rg['master_region_kode'];
+        }
+
+        $data['kode_region'] = $reg[session()->get('id_region')];
 
         $data['progress_divestasi'] = $this->progressAll($id_divestasi);
 

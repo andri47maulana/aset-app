@@ -128,7 +128,10 @@ $encrypter = \Config\Services::encrypter();
                             if($_GET['lokasi']==$reg['master_region_kode']) $selected="selected";
                         }
                         
-                        echo '<option '.$selected.' value="'.$reg['master_region_kode'].'">'.$reg['master_region_nama'].'</option>';
+                        if($kode_region=='ADM' or $kode_region=='HO' or $kode_region==$reg['master_region_kode']){
+                           echo '<option '.$selected.' value="'.$reg['master_region_kode'].'">'.$reg['master_region_nama'].'</option>';
+                        }
+                        
                       }; ?>
                   </select>
                 </div>
