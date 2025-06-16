@@ -755,7 +755,7 @@
 																				             &nbsp<label class="custom-switch">
 																				             	<?php
 																				             		$disabled="disabled";
-																				             		if(session()->get('role_id')==20){
+																				             		if(session()->get('region_id')==99){
 																				             			?>
 																				             			<input type="checkbox" id="statusSwitch-<?= $i?>" <?= ($divestasi_data->current_status==$tahapan)?'checked':''?> onchange="toggleStatus('<?=$divestasi_data->id_divestasi?>','<?= $tahapan?>',<?= $i?>)">
 																				                		<span class="slider"></span>
@@ -807,7 +807,7 @@
 																				                            <td>
 																				                                <a href="<?= base_url($pathFile.$file['file_name']); ?>" class="btn btn-primary btn-sm" target="_blank"><i class="fa fa-eye"> View</i></a>
 
-																				                                <?php if(session()->get('role_id')==20){?>
+																				                                <?php if(session()->get('region_id')==99){?>
 																				                                <a href="javascript:void(0)" data="<?= $file['id_log_divestasi'] ?>" class="btn btn-success btn-sm approve-btn"><i class="fa fa-check"> Approve</i></a>
 																				                                <a href="javascript:void(0)" data="<?= $file['id_log_divestasi'] ?>" class="btn btn-warning btn-sm reject-btn"><i class="fa fa-ban"> Reject</i></a>
 																				                                <?php }?>
