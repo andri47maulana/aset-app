@@ -86,7 +86,7 @@ class Map_ai extends BaseController
 
     private function searchWilayah($search) {
         $keywords = array_filter(array_map('trim', explode(" ", $search)));
-        $query = $this->db->table('master_wilayah')->select("kode_wilayah, wilayah");
+        $query = $this->db->table('master_wilayah')->select("kode_wilayah, wilayah")->where('LENGTH(kode_wilayah) - LENGTH(REPLACE(kode_wilayah, ".", "")) =', 3);
 
         $caseStatements = [];
 
@@ -140,9 +140,6 @@ class Map_ai extends BaseController
         $info = $model->getCuacaBMKG($reg,$wilayah);
         $cuaca = json_decode($info,1);
         $cuaca = $cuaca['data'];
-        //echo "<pre>";
-        //var_dump($cuaca);
-        //echo "</pre>";
         foreach($cuaca as $c=>$v){
             foreach($cuaca as $v=>$d){
                 foreach($d['cuaca'] as $t){
@@ -1256,6 +1253,18 @@ class Map_ai extends BaseController
         }
         $similarity = $match_count / count($question_tokens) * 100;
         return $similarity;
+    }
+
+
+    function db_konteks($pertanyaan){
+        $q = array(
+            "Tampilkan kerjasama di regional" => "kerjasama",
+            "Dimana letak kerjasama " => "kerjasama",
+            "Tampilkan isi SOP terkait" => "SOP",
+            "Berapa produksi,laba rugi, luas dan produktivitas" => "MRC",
+        );
+
+        return isset($q[$pertanyaan]) ? $q[$pertanyaan] : null;
     }
 
 
