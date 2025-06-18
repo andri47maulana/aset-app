@@ -183,12 +183,17 @@
 
 
 		public function getDataAset($id_maia_masterlists=""){
-			$result = $this->db->table('v_maia_masterlist as m') 
+			$db = \Config\Database::connect();
+			$fieldOrder = "FIELD(m.nmr_aset, " . implode(',', array_map(fn($val) => $db->escape($val), $id_maia_masterlists)) . ")";
+
+			$result = $db->table('v_maia_masterlist as m') 
 		                   ->select(" *, concat(m.deskripsi_aset,' [',m.nmr_aset,']') as label_aset")                  
 		                   ->whereIn('nmr_aset', $id_maia_masterlists)
+		                   ->orderBy($fieldOrder, '', false)
 		                   ->limit(10)
 		                   ->get()
 		                   ->getResult();   
+        //var_dump($this->db->getLastQuery()->getQuery());
 
 		    return $result;
 		}
