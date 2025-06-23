@@ -249,12 +249,11 @@
 		                      ->orLike('m.nmr_aset', $search)
 		                      ->limit(10);
 
-		    if (session()->get('role_id') != 20) {
-		        $query->where('m.unit_id', session()->get('unit_id'));
-		    }
+		    // if (session()->get('role_id') != 20) {
+		    //     $query->where('m.unit_id', session()->get('unit_id'));
+		    // }
 
 		    $result = $query->get(); // Execute query first
-		    //var_dump($this->db->getLastQuery()->getQuery());
 		    return $result->getResult(); // Fetch results
 		}
 
@@ -287,7 +286,13 @@
 
 
 
-
+	    public function save_sap($data)
+	    {
+	    
+	        $db = \Config\Database::connect();
+	        $builder = $db->table('maia_masterlist2');
+	        $builder->insert($data); 
+	    }
 
 
 	}

@@ -910,6 +910,46 @@ class C_divestasi extends BaseController
     }
 
 
+    public function add_sap(){
+        $post = $this->request->getPost();
+        $data['deskripsi_aset'] = $post['deskripsi_aset'];
+        $data['nomor_aset'] = "X".$this->uuid_();
+        $data['kode_perusahaan'] = "N0";
+        $data['kode_aset_rehab'] = "-";
+
+        $model = new M_Divestasi();
+        // Simpan data ke database via model
+        $ins = $model->save_sap($data);
+        if ($ins) {
+            echo json_encode([
+                "status" => "success",
+                "message" => "Data berhasil disimpan"
+            ]);
+        } else {
+            echo json_encode([
+                "status" => "error",
+                "message" => "Gagal menyimpan data"
+            ]);
+        }
+    }
+
+
+
+    private function uuid_()
+    {
+        // Ambil timestamp (waktu sekarang, detik)
+        $time = dechex(time()); // contoh: 6660a2f4
+
+        // Ambil 4 karakter acak (hex)
+        $rand = bin2hex(random_bytes(2)); // contoh: b4c2
+
+        // Gabungkan dan potong jadi 12 karakter
+        $uuid = substr($time . $rand, 0, 12);
+
+        return strtoupper($uuid); // hasil seperti: 6660A2F4B4C2
+    }
+
+
     private function create_notif_wa($data)
     {
         $tgl_sekarang = date('Y-m-d');

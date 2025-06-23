@@ -1159,14 +1159,16 @@
 					// 	    return markup;
 					// 	  }
 					// });
-            	console.log($('.selectAset').select2());
+            	// console.log($('.selectAset').select2());
 
+            	let lastSearchTerm = '';
             	$('.selectAset').select2({
 				    ajax: {
 				        url: '<?= base_url("C_divestasi/getAsetMaia") ?>',
 				        dataType: 'json',
 				        delay: 250,
 				        data: function(params) {
+				        	lastSearchTerm = params.term;
 				            return {
 				                search: params.term
 				            };
@@ -1180,7 +1182,10 @@
 				    placeholder: "Pilih aset...",
 				    "language": {
 					       "noResults": function(){
-					           return "Data tidak ditemukan";
+					           return `<div style="display: flex; justify-content: space-between; align-items: center;">
+					 	          <span>Data tidak ditemukan! </span>
+					 	          <button type="button" class="btn-add-data" data="`+lastSearchTerm+`" style="margin-left: 10px; color: blue; cursor: pointer;">Tambah Data</button>
+					 	        </div>`;
 					       }
 					   },
 					    escapeMarkup: function (markup) {
@@ -1189,9 +1194,28 @@
 				});
 
 				$(document).on('click', '.btn-add-data', function () {
-				    // Misal buka modal atau redirect ke form tambah aset
-				    // Contoh pakai modal Bootstrap
-				    $('#modalTambahAset').modal('show');
+				    let data_=$(this).attr('data');
+				    console.log(data_);
+				    if(confirm('Anda ingin menambahkan data '+data_+'?')){
+
+					    let data = {};
+					    data['deskripsi_aset']=data_;
+
+					    $.ajax({
+			                    method: "post",
+			                    url: "<?= base_url() ?>/C_divestasi/add_sap",
+			                    data: data,
+			                    cache: false,
+			                    dataType: "json",
+			                    success: function(resp) {
+				            		alert('Data berhasil disimpan');
+			                    },
+			                    error: function(xhr, status, error) {
+			                    	console.log(status);
+			                    	console.log(error);
+			                    }
+			                });
+					}
 				});
 
 
@@ -1344,6 +1368,17 @@
 						        }
 						    },
 						    placeholder: "Pilih aset...",
+						    "language": {
+						       "noResults": function(){
+						           return `<div style="display: flex; justify-content: space-between; align-items: center;">
+						 	          <span>Data tidak ditemukan! </span>
+						 	          <button type="button" class="btn-add-data" style="margin-left: 10px; color: blue; cursor: pointer;">Tambah Data</button>
+						 	        </div>`;
+						       }
+						   },
+						    escapeMarkup: function (markup) {
+						        return markup;
+						    }
 						});
 	
 			}
