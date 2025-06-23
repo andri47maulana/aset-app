@@ -1351,12 +1351,15 @@
 						cloned.insertAfter($(that).closest(".multiple_aset"));
 						cloned.find('.btn-add-aset').attr('data-id',i);
 
+						let lastSearchTerm = '';
+
 						$('.selectAset').select2({
 						    ajax: {
 						        url: '<?= base_url("C_divestasi/getAsetMaia") ?>',
 						        dataType: 'json', 
 						        delay: 250, 
 						        data: function(params) {
+						            lastSearchTerm = params.term;
 						            return {
 						                search: params.term
 						            };
@@ -1372,7 +1375,7 @@
 						       "noResults": function(){
 						           return `<div style="display: flex; justify-content: space-between; align-items: center;">
 						 	          <span>Data tidak ditemukan! </span>
-						 	          <button type="button" class="btn-add-data" style="margin-left: 10px; color: blue; cursor: pointer;">Tambah Data</button>
+						 	          <button type="button" class="btn-add-data" data="`+lastSearchTerm+`" style="margin-left: 10px; color: blue; cursor: pointer;">Tambah Data</button>
 						 	        </div>`;
 						       }
 						   },
