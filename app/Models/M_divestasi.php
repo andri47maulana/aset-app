@@ -5,14 +5,14 @@
 
 	class M_Divestasi extends Model
 	{
-	    protected $table = 'divestasi_log';
-	    protected $primaryKey = 'id_log_divestasi';
+	    protected $table = 'divestasi_log_tahapan';
+	    protected $primaryKey = 'id_log_tahapan';
 	    protected $allowedFields = ['id_divestasi','file_name', 'kategori','tahapan','status','created_at','start_log','target_log','keterangan','approval_status','approval_date','nominal'];
 
 
 		//tabel divestasi_data
 	    protected $dataTable = 'divestasi_data'; 
-	    protected $dataAllowedFields = ['id_divestasi', 'objek_divestasi','luas_objek_divestasi','nilai_objek_divestasi','jenis_rkap','lokasi_objek_divestasi','id_maia_masterlists','nilai_buku','nilai_buku_aset','nilai_njop','nilai_kjpp','satuan_aset','tgl_nilai_buku','tgl_njop','tgl_kjpp','jenis_aset','jumlah_aset','metode','start_date','target_date', 'created_at','current_start_log','current_target_log','current_status','unit_id_user','except_tahapan']; 
+	    protected $dataAllowedFields = ['id_divestasi', 'objek_divestasi','luas_objek_divestasi','nilai_objek_divestasi','jenis_rkap','lokasi_objek_divestasi','id_maia_masterlists','nilai_buku','nilai_buku_aset','nilai_njop','nilai_kjpp','satuan_aset','tgl_nilai_buku','tgl_njop','tgl_kjpp','jenis_aset','jumlah_aset','metode','start_date','target_date', 'created_at','current_start_log','current_target_log','current_status','unit_id_user','except_tahapan','periode_rkap']; 
 
 
 	    public function insert_divestasi_data2($data)
@@ -25,10 +25,15 @@
 
 	    public function insert_divestasi_data($data,$log=0)
 	    {
+
+	    	// $tempDives = $this->getDivestasi($id_divestasi);
+	    	// var_dump($tempDives);
+
 	        $db = \Config\Database::connect();
 	        $builder = $db->table($this->dataTable);
 
-
+	        $post = $data['post'];
+	        unset($data['post']);
 	        if($log==0){
 	        	$updateFields = [
 		            'objek_divestasi'    => $data['objek_divestasi'],
@@ -47,16 +52,15 @@
 		            'nilai_buku_aset' 	 => $data['nilai_buku_aset'],
 		            'nilai_njop' 		 => $data['nilai_njop'],
 		            'nilai_kjpp' 		 => $data['nilai_kjpp'],
-
 		            'tgl_nilai_buku' 	 => $data['tgl_nilai_buku'],
 		            'tgl_njop' 			 => $data['tgl_njop'],
 		            'tgl_kjpp' 			 => $data['tgl_kjpp'],
-
 		            //'realisasi_pembayaran'	=> $data['realisasi_pembayaran'],
 		            'unit_id_user'		 => $data['unit_id_user'],
 		            'jenis_rkap'		 => $data['jenis_rkap'],
-		            'lokasi_objek_divestasi'=> $data['lokasi_objek_divestasi'],
+		            'periode_rkap'		 => $data['jenis_rkap']." ".date('Y',strtotime($data['start_date'])),
 
+		            'lokasi_objek_divestasi'=> $data['lokasi_objek_divestasi'],
 		            'luas_aset' 		=> $data['luas_aset'],
 		            'nilai_objek_aset'	=> $data['nilai_objek_aset'],
 		            'nilai_buku_aset' 	=> $data['nilai_buku_aset'],
@@ -76,8 +80,49 @@
 
 	        $db->query($sql);
 
+
+	        #LOGS
+	        $insertId = $db->insertID();
+	        if($log==0){
+
+	       		//LOG DATA DIVESTASI
+		        if($insertId!=0){//Jika ada perubahan dan data baru
+		        	$logs['title'] 		 ="Update Log Data Divestasi";
+		        	$logs['id_divestasi']=$insertId;
+		       		$logs['activity']    ="Data Objek Divestasi : ".$data['objek_divestasi'];
+		       		$logs['data_']        = json_encode($updateFields);
+	        		$this->insert_logs($logs);
+		        }
+		    }else{
+		    	//LOG TAHAPAN DIVESTASI
+		    	$logs['title'] 		 ="Update Tahapan";
+	        	$logs['id_divestasi']=$insertId;
+	       		$logs['activity']    ="Progress : ".$post['tahapan']." [".$post['status']."]";
+		       	$logs['data_']        = json_encode($updateFields).'';
+	       		$this->insert_logs($logs);
+
+	        }
+
+
 	        //echo $this->db->getLastQuery()->getQuery();
-	        return $db->insertID();
+	        return $insertId;
+	    }
+
+
+	    public function insert_logs($data){
+	    	$db = \Config\Database::connect();
+	        $builder = $db->table("divestasi_logs");
+
+	    	$logs['date_created']=date('Y-m-d H:i:s');
+	    	$logs['id_divestasi']=$data['id_divestasi'];
+	    	$logs['title']		 =$data['title'];
+	    	$logs['activity']	 =$data['activity'];
+	    	$logs['data_']	 	 =$data['data_'];
+
+	    	if (!$builder->insert($logs)) {
+		        return 'error: save logs failed: ' . json_encode($builder->getError());
+		    }
+
 	    }
 
 
@@ -95,7 +140,16 @@
 		        return 'error: Insert log action failed: ' . json_encode($builder->getError());
 		    }
 		    //echo $this->db->getLastQuery()->getQuery();
-		    return $db->insertID();
+
+		    $id = $db->insertID();
+
+	    	$logs['title'] 		 ="Update Status";
+        	$logs['id_divestasi']=$insertId;
+       		$logs['activity']    ="Update : ".$post['tahapan']." [".$data['action']."]";
+
+	        $this->insert_logs($logs);
+
+		    return $id;
 		}
 
 
@@ -103,9 +157,20 @@
 		    $db = \Config\Database::connect();
 		    $builder = $db->table($this->dataTable);
 
-		    // Correct update syntax: Pass data first, then WHERE condition
 		    $builder->where('id_divestasi', $id);  // Assuming 'id' is your primary key
-		    return $builder->update($data); 
+		    $builder->update($data); 
+
+		    ##LOGS
+        	$logs['title']       = "Update Data Divestasi";
+        	$logs['id_divestasi']=$id;
+
+        	$update_data="";
+        	foreach($data as $k=>$d){
+        		$update_data .=$k.":".$d.", ";
+        	}
+
+       		$logs['activity']    ="Update Objek Divestasi : ".$update_data;
+	        $this->insert_logs($logs);
 
 		}
 
@@ -122,7 +187,7 @@
 
 
 	    public function getDivestasiLog($id_divestasi){
-	         $result = $this->db->table('divestasi_log as d')
+	         $result = $this->db->table('divestasi_log_tahapan as d')
 		                       ->select('*')  
 		                       ->where('id_divestasi',$id_divestasi)
 		                        ->groupStart()
@@ -130,6 +195,19 @@
 							        ->orWhere('approval_status', null)
 							    ->groupEnd()
 		                       ->orderBy('created_at')
+		                       //->getCompiledSelect()
+		                       ->get()
+		                       ->getResultArray();
+		    //echo $this->db->getLastQuery()->getQuery();
+	        return $result;
+	    }
+
+
+	    public function getDivestasiLogs($id_divestasi){
+	         $result = $this->db->table('divestasi_logs as d')
+		                       ->select('*')  
+		                       ->where('id_divestasi',$id_divestasi)
+		                       ->orderBy('date_created','desc')
 		                       //->getCompiledSelect()
 		                       ->get()
 		                       ->getResultArray();

@@ -272,6 +272,7 @@ class C_divestasi extends BaseController
         // echo json_encode($post);
         
         $data['id_divestasi']           = $this->request->getPost('id_divestasi');
+        $id_temp                        = $data['id_divestasi'];
         $data['objek_divestasi']        = $this->request->getPost('objek_divestasi');
         $data['jenis_rkap']             = $this->request->getPost('jenis_rkap');
         $data['lokasi_objek_divestasi'] = $this->request->getPost('lokasi_objek_divestasi');
@@ -329,9 +330,9 @@ class C_divestasi extends BaseController
         $model = new M_Divestasi();
         $data['id_divestasi']           = $model->insert_divestasi_data($data);
 
+
         // echo json_encode($data);
         return $this->response->setJSON($data);
-
 
         // $data['luas_objek_divestasi']   = $this->request->getPost('luas_objek_divestasi');
         // $data['nilai_objek_divestasi']  = $this->request->getPost('nilai_objek_divestasi');
@@ -344,15 +345,12 @@ class C_divestasi extends BaseController
         // $assets     = $this->request->getPost('assets');
         // $nilai_buku = $this->request->getPost('nilai_buku_aset');
         // $nilai_objek= $this->request->getPost('nilai_objek_aset');
-        // $luas       = $this->request->getPost('luas_aset');
-
-        
+        // $luas       = $this->request->getPost('luas_aset');        
 
         // $data['id_maia_masterlists'] =json_encode(array_column($assets, 0));
         // $data['nilai_buku_aset'] =json_encode($nilai_buku);
         // $data['nilai_objek_aset'] =json_encode($nilai_objek);
         // $data['luas_aset'] =json_encode($luas);
-
             
         // $data['metode']                 = $this->request->getPost('metode');
         // $data['start_date']             = $this->request->getPost('start_date');
@@ -392,7 +390,6 @@ class C_divestasi extends BaseController
         $tahapan = $this->request->getPost('tahapan');
         $nominal = $this->request->getPost('nominal_bayar');
         $tahapan_label = $this->request->getPost('tahapan_label');
-
 
         // Validasi input
         if (!$fileGroup || !$uploadedFile || !$uploadedFile->isValid()) {
@@ -437,10 +434,7 @@ class C_divestasi extends BaseController
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
-
-
     
-
 
     public function proses($id_divestasi){
         if (session()->get('username') == '') {
@@ -452,11 +446,12 @@ class C_divestasi extends BaseController
         $model = new M_Divestasi();
         $asetModel = new M_aset_manajemen();
 
-        $data['divestasi_data']     = $model->getDivestasi($id_divestasi);
-        $data['divestasi_log']      = $model->getDivestasiLog($id_divestasi);
+        $data['divestasi_data']         = $model->getDivestasi($id_divestasi);
+        $data['divestasi_log_tahapan']  = $model->getDivestasiLog($id_divestasi);
+        $data['divestasi_logs']         = $model->getDivestasiLogs($id_divestasi);
 
         $total_bayar=0;
-        foreach($data['divestasi_log'] as $d){
+        foreach($data['divestasi_log_tahapan'] as $d){
             if($d['approval_status']=='approve')$total_bayar+=$d['nominal'];
         }
 
@@ -608,7 +603,7 @@ class C_divestasi extends BaseController
         $except_tahapan_sql = "'" . implode("','", $except_tahapan_array) . "'";
 
         $sql= "select COUNT(DISTINCT kategori) as jumlah,tahapan 
-                from divestasi_log log
+                from divestasi_log_tahapan log
                 where log.id_divestasi='".$id_divestasi."' 
                 AND log.tahapan NOT IN ($except_tahapan_sql) 
                 and approval_status='approve'
@@ -661,7 +656,7 @@ class C_divestasi extends BaseController
         if($id_divestasi!='')$where=' and log.id_divestasi="'.$id_divestasi.'" ';
 
         $sql="select log.id_divestasi, COUNT(DISTINCT kategori) as jumlah
-                from divestasi_log log 
+                from divestasi_log_tahapan log 
                 INNER join divestasi_data dt on dt.id_divestasi=log.id_divestasi
                 INNER JOIN divestasi_master_tahapan m 
                     ON m.id_tahapan_divestasi = log.tahapan
@@ -712,7 +707,7 @@ class C_divestasi extends BaseController
     private function countProgressAll(){
 
         $sql="select log.id_divestasi,COUNT(DISTINCT kategori) as jumlah,except_tahapan
-                from divestasi_log log
+                from divestasi_log_tahapan log
                 LEFT JOIN divestasi_data dt on log.id_divestasi = dt.id_divestasi
                 where `approval_status` = 'approve'  
                 and (except_tahapan is null OR FIND_IN_SET(tahapan, except_tahapan) = 0)
@@ -815,27 +810,56 @@ class C_divestasi extends BaseController
                 $data['current_start_log'] = "";
                 $data['current_target_log']= "";
             }
+            $data['post']=$post;
 
             $model->insert_divestasi_data($data,1);
-            if($post['status']=='Open'){
-                $dataPesan['id_divestasi']    = $post['id_divestasi'];
-                $dataPesan['tahapan']         = $post['tahapan'];
-                $dataPesan['tglStart']        = $post['start_log'];
-                $dataPesan['tglTarget']       = $post['target_log'];
-                $dataPesan['objek_divestasi'] = $post['objek_divestasi'];
 
-                $dataPesan['id_user']         = session()->get('user_id');
-                $dataPesan['jenis']           = 'openTahapan';
-                $dataPesan['phoneNumber']     = $this->getNoWa(session()->get('user_id'))->user_telp;
-                $dataPesan['tglKirim']        = date('Y-m-d');
 
-                $this->create_notif_wa($dataPesan);
-            }
+            // if($post['status']=='Open'){
+            //     $dataPesan['id_divestasi']    = $post['id_divestasi'];
+            //     $dataPesan['tahapan']         = $post['tahapan'];
+            //     $dataPesan['tglStart']        = $post['start_log'];
+            //     $dataPesan['tglTarget']       = $post['target_log'];
+            //     $dataPesan['objek_divestasi'] = $post['objek_divestasi'];
+
+            //     $dataPesan['id_user']         = session()->get('user_id');
+            //     $dataPesan['jenis']           = 'openTahapan';
+            //     $dataPesan['phoneNumber']     = $this->getNoWa(session()->get('user_id'))->user_telp;
+            //     $dataPesan['tglKirim']        = date('Y-m-d');
+
+            //     $this->create_notif_wa($dataPesan);
+            // }
 
             echo json_encode($data);
 
     }
 
+
+
+    public function update_log(){
+        // Simpan log ke database
+            $post  = $this->request->getPost();
+            $model = new M_Divestasi();
+            $id = $post['id'];
+            $data = [
+                'approval_status'=>$post['status'],
+                'keterangan'=>$post['keterangan'],
+                'approval_date'=> date('Y-m-d H:i:s')
+            ];
+
+            //
+            $model->update($id,$data);
+            $data_log['id_log_tahapan']=$id;
+            $data_log['action']=$post['status'];
+            $data_log['info']=$post['keterangan'];
+            $data_log['created_date'] = date('Y-m-d H:i:s');
+
+
+            $insert_log = $this->save_log_action($data_log);
+
+            //echo json_encode($this->db->getLastQuery()->getQuery());
+            echo $insert_log;
+    }
 
 
     public function save_log_action($data)
@@ -859,32 +883,6 @@ class C_divestasi extends BaseController
                 "desc" => $result // Sudah berupa string error dari model
             ]);
         }
-    }
-
-
-    public function update_log(){
-        // Simpan log ke database
-            $post  = $this->request->getPost();
-            $model = new M_Divestasi();
-            $id = $post['id'];
-            $data = [
-                'approval_status'=>$post['status'],
-                'keterangan'=>$post['keterangan'],
-                'approval_date'=> date('Y-m-d H:i:s')
-            ];
-
-            //
-            $model->update($id,$data);
-            $data_log['id_log']=$id;
-            $data_log['action']=$post['status'];
-            $data_log['info']=$post['keterangan'];
-            $data_log['created_date'] = date('Y-m-d H:i:s');
-
-
-            $insert_log = $this->save_log_action($data_log);
-
-            //echo json_encode($this->db->getLastQuery()->getQuery());
-            echo $insert_log;
     }
 
     public function except_add(){

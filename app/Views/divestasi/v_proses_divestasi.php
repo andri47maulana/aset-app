@@ -596,6 +596,30 @@
 															                                    <td><strong>Target Selesai</strong></td>
 															                                    <td><?= ($divestasi_data->target_date)?></td>
 															                                </tr>
+
+															                                <tr>
+															                                    <td><strong>Periode RKAP</strong></td>
+															                                    <td><a class="btn-default" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"> <?= ($divestasi_data->periode_rkap)?> </a></td>
+															                                </tr>
+															                                <tr  class="collapse" id="collapseExample" >
+															                                	<td colspan="2">
+																									  <div class="card card-body" style="font-size:9px">
+																									    <?php 
+																									    	$temp="";
+																									    	foreach ($divestasi_logs as $logs) {
+																									    		$l=json_decode($logs['data_']);
+																									    		if($l->periode_rkap!=null) {
+																									    			if($temp!=$l->periode_rkap){
+																										    			$temp=$l->periode_rkap;
+																										    			echo $l->periode_rkap." <br>
+																										    			(last update: ".date('d-m-Y H:i:s',strtotime($logs['date_created'])).")<br>";
+																										    		}
+																									    		};
+																									    	}
+																									    ?>
+																									  </div>
+															                                	</td>
+															                                </tr>
 															                            </tbody>
 															                        </table>
 															                    
@@ -607,13 +631,13 @@
 															                        <h4>Riwayat & Progress</h4>
 																				    <ul class="timeline">
 																				      <?php
-																				      		//var_dump($divestasi_log);
+																				      		//var_dump($divestasi_log_tahapan);
 
 																				      		$status_['']='';
 																				      		$status_['approve']="<span class='btn btn-xs btn-success'>Approve</span>";
 																				      		$status_['reject']="<span class='btn btn-xs btn-warning'>Reject</span>";
 
-																				      		foreach($divestasi_log as $d){
+																				      		foreach($divestasi_log_tahapan as $d){
 																				      			$d = (object) $d;
 																				      			$status="";
 																				      			if($d->start_log!=""){
@@ -808,12 +832,12 @@
 																				                                <a href="<?= base_url($pathFile.$file['file_name']); ?>" class="btn btn-primary btn-sm" target="_blank"><i class="fa fa-eye"> View</i></a>
 
 																				                                <?php if(session()->get('region_id')==99){?>
-																				                                <a href="javascript:void(0)" data="<?= $file['id_log_divestasi'] ?>" class="btn btn-success btn-sm approve-btn"><i class="fa fa-check"> Approve</i></a>
-																				                                <a href="javascript:void(0)" data="<?= $file['id_log_divestasi'] ?>" class="btn btn-warning btn-sm reject-btn"><i class="fa fa-ban"> Reject</i></a>
+																				                                <a href="javascript:void(0)" data="<?= $file['id_log_tahapan'] ?>" class="btn btn-success btn-sm approve-btn"><i class="fa fa-check"> Approve</i></a>
+																				                                <a href="javascript:void(0)" data="<?= $file['id_log_tahapan'] ?>" class="btn btn-warning btn-sm reject-btn"><i class="fa fa-ban"> Reject</i></a>
 																				                                <?php }?>
 
 																				                                <?php if($file['approval_status']!='approve'){?>
-																				                                <a href="javascript:void(0)" data="<?= $file['id_log_divestasi'] ?>" class="btn btn-danger btn-sm delete-btn"><i class="fa fa-trash"> Delete</i></a>
+																				                                <a href="javascript:void(0)" data="<?= $file['id_log_tahapan'] ?>" class="btn btn-danger btn-sm delete-btn"><i class="fa fa-trash"> Delete</i></a>
 																				                                <?php }?>
 																				                            </td>
 																				                        </tr>
@@ -1135,7 +1159,7 @@
 					// 	    return markup;
 					// 	  }
 					// });
-            	            		console.log($('.selectAset').select2());
+            	console.log($('.selectAset').select2());
 
             	$('.selectAset').select2({
 				    ajax: {
@@ -1156,7 +1180,7 @@
 				    placeholder: "Pilih aset...",
 				    "language": {
 					       "noResults": function(){
-					           return "No Results Found";
+					           return "Data tidak ditemukan";
 					       }
 					   },
 					    escapeMarkup: function (markup) {
