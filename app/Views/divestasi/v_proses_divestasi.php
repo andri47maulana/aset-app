@@ -838,11 +838,11 @@
 																				             &nbsp<label class="custom-switch">
 																				             	<?php
 																				             		$disabled="disabled";
-																				             		if(session()->get('region_id')==99){
+																				             		//if(session()->get('region_id')==99){
 																				             			?>
 																				             			<input type="checkbox" id="statusSwitch-<?= $i?>" <?= ($divestasi_data->current_status==$tahapan)?'checked':''?> onchange="toggleStatus('<?=$divestasi_data->id_divestasi?>','<?= $tahapan?>',<?= $i?>)">
 																				                		<span class="slider"></span>
-																				             		<?php } ?>
+																				             		<?php //} ?>
 																				                
 																				            </label>
 																				            <span class="ml-3" id="statusLabel-<?= $i?>">Status: <?= ($divestasi_data->current_status==$tahapan)?'<b class="btn-success">Open</b>':'Close'?></span>
