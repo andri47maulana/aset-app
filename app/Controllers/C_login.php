@@ -203,7 +203,7 @@ class C_login extends Controller
         }
     }
 
-    public function ganti_password()
+    public function ganti_password__()
     {
         $user_id = $this->request->getVar('user_id');
         $current_url = $this->request->getVar('current_url');
@@ -231,6 +231,41 @@ class C_login extends Controller
 
         $update = $db->table('amanat_users')
             ->set('user_pass', $hash_password)
+            ->update();
+
+        session()->setFlashdata('change_password_success', 'Password Berhasil Di perbaharui!');
+        return redirect()->to($current_url);
+    }
+
+
+    public function ganti_password()
+    {
+        $user_id = $this->request->getVar('user_id');
+        $current_url = $this->request->getVar('current_url');
+        $old_password = $this->request->getVar('old_password');
+        $new_password = $this->request->getVar('new_password');
+        $conf_new_password = $this->request->getVar('conf_new_password');
+
+        if ($new_password !== $conf_new_password) {
+            session()->setFlashdata('change_password_fail', 'Password baru dan Konfirmasi Password tidak cocok!');
+            return redirect()->to($current_url);
+        }
+
+        $db = \Config\Database::connect();
+        $q = $db->table('user')
+            ->where('user_id', $user_id)
+            ->get()
+            ->getRowArray();
+
+        if (!password_verify($old_password, $q['password'])) {
+            session()->setFlashdata('change_password_fail', 'Password Lama Salah!');
+            return redirect()->to($current_url);
+        }
+
+        $hash_password = password_hash($new_password, PASSWORD_BCRYPT);
+
+        $update = $db->table('user')
+            ->set('password', $hash_password)
             ->update();
 
         session()->setFlashdata('change_password_success', 'Password Berhasil Di perbaharui!');
