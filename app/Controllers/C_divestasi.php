@@ -272,6 +272,7 @@ class C_divestasi extends BaseController
         // echo json_encode($post);
         
         $data['id_divestasi']           = $this->request->getPost('id_divestasi');
+        $data['kode_divestasi']         = $this->request->getPost('kode_divestasi');
         $id_temp                        = $data['id_divestasi'];
         $data['objek_divestasi']        = $this->request->getPost('objek_divestasi');
         $data['jenis_rkap']             = $this->request->getPost('jenis_rkap');
@@ -279,6 +280,7 @@ class C_divestasi extends BaseController
         $data['start_date']             = $this->request->getPost('start_date');
         $data['target_date']            = $this->request->getPost('target_date');
         $data['metode']                 = $this->request->getPost('metode');
+        $data['keterangan_pembayaran']  = $this->request->getPost('keterangan_pembayaran');
 
 
         //--MULTIPLE DATA--
@@ -311,12 +313,24 @@ class C_divestasi extends BaseController
         $tgl_njop= $this->request->getPost('tgl_njop');
         $data['tgl_njop'] =json_encode($tgl_njop);
 
+        $estimasi_nilai= $this->request->getPost('estimasi_nilai');
+        $data['estimasi_nilai'] =json_encode($estimasi_nilai);
+
+        $estimasi_keterangan= $this->request->getPost('estimasi_keterangan');
+        $data['estimasi_keterangan'] =json_encode($estimasi_keterangan);
+
         $nilai_kjpp= $this->request->getPost('nilai_kjpp');
         $data['nilai_kjpp'] =json_encode($nilai_kjpp);
 
         $data['nilai_objek_divestasi']=0;
         foreach($nilai_kjpp as $nkjpp){
             $data['nilai_objek_divestasi']+=$nkjpp;
+        }
+
+        if($data['nilai_objek_divestasi']==0){
+            foreach($estimasi_nilai as $nestimasi){
+                $data['nilai_objek_divestasi']+=$nestimasi;
+            }                   
         }
 
         $tgl_kjpp= $this->request->getPost('tgl_kjpp');
@@ -735,6 +749,7 @@ class C_divestasi extends BaseController
         $sql= "
         select count(group_tahapan) as jumlah, 
                 sum(nilai_objek_divestasi) as total_kjpp,
+                sum(estimasi_nilai) as total_estimasi,
                 sum(nilai_buku) as total_nilai_buku,
                 sum(realisasi_pembayaran) as total_nilai_realisasi,
                 thp.group_tahapan

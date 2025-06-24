@@ -193,7 +193,8 @@
 
 					                <div class="card">
 					                    <div class="card-header bg-secondary text-white h4">
-					                        ID DIVESTASI : dives-<?php echo uniqid();?>
+					                        <span>ID DIVESTASI : <?= ($divestasi_data->kode_divestasi != "") ? $divestasi_data->kode_divestasi : "" ?></span>
+					                        <input type="hidden" id="kodeDivestasi" value="<?= ($divestasi_data->kode_divestasi != "") ? $divestasi_data->kode_divestasi : "dives-".uniqid();?>"/>
 					                        <span>
 					                        			<?php 
 												    	if($divestasi_data->metode==''){
@@ -290,7 +291,7 @@
 													    	<select  id="selectAset0" multiple="multiple" class="form-control selectAset"></select>
 													    </span>
 											        </div>
-											        <div class="me-2 col-md-2 form-group">
+											        <div class="me-1 col-md-1 form-group">
 											            <label for="jenis_aset">Jenis Aset</label>
 											             <select class="form-control jenis_aset">
 													        <option value="" <?= (json_decode($divestasi_data->jenis_aset)[0]=='')?"selected":''?>>--Pilih Jenis--</option>
@@ -314,13 +315,22 @@
 
 												    </div>
 
-												    <div class="me-2 col-md-2 form-group">
+												    <div class="me-1 col-md-1 form-group">
 											            <label for="objekDivestasi">Nilai NJOP</label>
 											            <div class="d-flex align-items-center">
 												            <input type="text" value="<?= json_decode($divestasi_data->nilai_njop)[0] ?>" class="form-control nilai_njop" placeholder="Rp. ">
 													    </div>
 												    		<span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Tgl. NJOP: <input class="tgl_njop"  type='date' value='<?= (json_decode($divestasi_data->tgl_njop)[0])?? date('Y-m-d'); ?>' /></span>
 											        </div>
+
+											         <div class="me-2 col-md-2 form-group">
+												            <label for="estimasiDivestasi">Nilai Estimasi</label>
+												            <div class="d-flex align-items-center">
+													            <input type="text" value="<?= json_decode($divestasi_data->estimasi_nilai)[0] ?>" class="form-control estimasi_nilai" placeholder="Rp. ">
+													            <br>
+														    </div>
+												    		<span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Ket:<input class="estimasi_keterangan" style="width: 90%;text-align:right;" type='text' value='<?= (json_decode($divestasi_data->estimasi_keterangan)[0])?? ""; ?>' /></span>
+												        </div>
 
 											        <div class="me-2 col-md-2 form-group">
 											            <label for="objekDivestasi">Nilai KJPP</label>
@@ -342,6 +352,7 @@
 											$total_nilai_buku = 0;
 											$total_nilai_njop = 0;
 											$total_nilai_kjpp = 0;
+											$total_nilai_estimasi=0;
 
 					                        
 											if(isset($divestasi_data->id_maia_masterlists)){
@@ -351,6 +362,7 @@
 							                        $total_nilai_buku=json_decode($divestasi_data->nilai_buku_aset)[0];
 							                        $total_nilai_njop=json_decode($divestasi_data->nilai_njop)[0];
 							                        $total_nilai_kjpp=json_decode($divestasi_data->nilai_kjpp)[0];
+							                        $total_nilai_estimasi=json_decode($divestasi_data->estimasi_nilai)[0];
 
 					                        		$i++;
 					                        		continue;
@@ -361,16 +373,19 @@
 												$nilai_buku_list  = json_decode($divestasi_data->nilai_buku_aset, true);
 												$nilai_njop_list  = json_decode($divestasi_data->nilai_njop, true);
 												$nilai_kjpp_list  = json_decode($divestasi_data->nilai_kjpp, true);
+												$nilai_estimasi_list  = json_decode($divestasi_data->estimasi_nilai, true);
 
 												$luas_aset_       = floatval($luas_list[$i] ?? 0);
 												$nilai_buku_aset_ = floatval($nilai_buku_list[$i] ?? 0);
 												$nilai_njop_aset_ = floatval($nilai_njop_list[$i] ?? 0);
 												$nilai_kjpp_aset_ = floatval($nilai_kjpp_list[$i] ?? 0);
+												$nilai_estimasi_aset_ = floatval($nilai_estimasi_list[$i] ?? 0);
 
 												$total_luas       += $luas_aset_;
 												$total_nilai_buku += $nilai_buku_aset_;
 												$total_nilai_njop += $nilai_njop_aset_;
 												$total_nilai_kjpp += $nilai_kjpp_aset_;
+												$total_nilai_estimasi += $nilai_estimasi_aset_;
 
 					                        ?>
 					                        	<div class="row mb-3 multiple_aset">
@@ -381,7 +396,7 @@
 														    	<select id="selectAset<?= $i?>"  name="asets" multiple="multiple" class="form-control selectAset"></select>
 														    </span>
 												        </div>
-												        <div class="me-2 col-md-2 form-group">
+												        <div class="me-1 col-md-1 form-group">
 												            <label for="jenis_aset">Jenis Aset</label>
 												             <select class="form-control jenis_aset">
 													            <option value="" <?= (json_decode($divestasi_data->jenis_aset)[$i]=='')?"selected":''?>>--Pilih Jenis--</option>
@@ -402,13 +417,24 @@
 													    	<input type="text" value="<?= json_decode($divestasi_data->nilai_buku_aset)[$i] ?>" class="form-control me-2 nilaiBukuAset" placeholder="Rp. ">
 												    		<span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Tgl. Nilai: <input class="tgl_nilai_buku" type='date' value='<?= (json_decode($divestasi_data->tgl_nilai_buku)[$i])?? date('Y-m-d'); ?>' /></span>
 													    </div>
-													<div class="me-2 col-md-2 form-group">
+													<div class="me-2 col-md-1 form-group">
 											            <label for="objekDivestasi">Nilai NJOP</label>
 											            <div class="d-flex align-items-center">
 												            <input type="text" value="<?= json_decode($divestasi_data->nilai_njop)[$i] ?>" class="form-control nilai_njop" placeholder="Rp. ">
 													    </div>
-												    		<span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Tgl. NJOP: <input class="tgl_njop"  type='date' value='<?= (json_decode($divestasi_data->tgl_njop)[$i])?? date('Y-m-d'); ?>' /></span>
+												    		<span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Tgl.: <input class="tgl_njop"  type='date' value='<?= (json_decode($divestasi_data->tgl_njop)[$i])?? date('Y-m-d'); ?>' /></span>
 											        </div>
+
+
+											        <div class="me-2 col-md-2 form-group">
+												            <label for="objekDivestasi">Nilai Estimasi</label>
+												            <div class="d-flex align-items-center">
+													            <input type="text" value="<?= json_decode($divestasi_data->estimasi_nilai)[$i] ?>" class="form-control estimasi_nilai" placeholder="Rp. ">
+													            <br>
+														    </div>
+												    		<span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Ket:<input class="estimasi_keterangan" style="width: 90%;text-align:right;" type='text' value='<?= (json_decode($divestasi_data->estimasi_keterangan)[$i])?? ""; ?>' /></span>
+												        </div>
+
 
 											        <div class="me-2 col-md-2 form-group">
 												            <label for="objekDivestasi">Nilai KJPP</label>
@@ -420,6 +446,8 @@
 														    </div>
 												    		<span style="text-align:right; font-size: 9px; display: flow; padding: 0;" class="btn btn-xs btn-primary">Tgl. Penilaian:<input class="tgl_kjpp" type='date' value='<?= (json_decode($divestasi_data->tgl_kjpp)[$i])?? date('Y-m-d'); ?>' /></span>
 												        </div>
+
+												     
 												        
 												    </div>
 												</div>
@@ -442,9 +470,7 @@
 												            
 											        </div>
 
-											        <div class="me-1 col-md-1 form-group">
-											           
-											        </div>
+											        
 
 
 											        <div class="me-2 col-md-2 form-group">
@@ -454,10 +480,17 @@
 													    </span>
 											        </div>
 
-											        <div class="me-2 col-md-2 form-group">
+											        <div class="me-1 col-md-1 form-group">
 											            <label for="objekDivestasi1">Total Nilai NJOP</label>
 											            <span class="flex-grow-1 me-2">
 												        	<input type="input" id="nilaiObjekDivestasi" readonly value="<?= ($total_nilai_njop)?>" class="form-control formatNilaiObjek">
+													    </span>
+											        </div>
+
+											        <div class="me-2 col-md-2 form-group">
+											            <label for="objekDivestasi1">Total Nilai Estimasi</label>
+											            <span class="flex-grow-1 me-2">
+												        	<input type="input" id="nilaiEstimasiDivestasi" readonly value="<?= ($total_nilai_estimasi)?>" class="form-control formatNilaiObjek">
 													    </span>
 											        </div>
 
@@ -496,6 +529,32 @@
 											            	<h1>Rp. <?= number_format($divestasi_data->realisasi_pembayaran)?></h1>
 													    </span>
 											        </div>
+
+											    </div>
+					                        </div>
+
+
+					                        <div class="row mb-3">
+					                            <div class="col-md-12 form-group d-flex align-items-center">
+					                            	<div class="me-2 col-md-5 form-group">
+											            <label for="objekDivestasi1"></label>
+											            <span class="flex-grow-1 me-2">
+													    </span>
+											        </div>
+											        <div class="me-2 col-md-4 form-group">
+											            <label for="objekDivestasi1"></label>
+											            <span class="flex-grow-1 me-2">
+													    </span>
+											        </div>
+
+
+											        <div class="me-2 col-md-3 form-group">
+													    <span class="flex-grow-1 me-2">
+													    	Keterangan
+												        	<input type="input" id="keterangan_pembayaran" placeholder="" value="<?= ($divestasi_data->keterangan_pembayaran)?>" class="form-control">
+													    </span>
+											        </div>
+
 												</div>
 					                        </div>
 
@@ -906,12 +965,14 @@
                 function saveDivestasi(id){
                 	let data ={};
                 	data['id_divestasi']			= id;
+                	data['kode_divestasi'] 			= $("#kodeDivestasi").val();
                 	data['objek_divestasi'] 		= $("#objekDivestasi").val();
                 	data['jenis_rkap']				= $("#jenis_rkap").val();
                 	data['lokasi_objek_divestasi']	= $("#lokasi_objek_divestasi").val();
                 	data['start_date'] 				= $("#startDate").val();
                 	data['target_date'] 			= $("#targetDate").val();
                 	data['metode']     				= $("#metode_tahapan :selected").val();
+                	data['keterangan_pembayaran']	= $("#keterangan_pembayaran").val();
 
                 	// Simpan nilai aset ke dalam array
 					$(".selectAset").each(function(){
@@ -966,6 +1027,18 @@
 						if(data['nilai_kjpp']==undefined){data['nilai_kjpp']=[]}
 						if($(this).val()=='')$(this).val(0);
 						data['nilai_kjpp'].push($(this).val());
+					});
+
+					$(".estimasi_nilai").each(function(){
+						if(data['estimasi_nilai']==undefined){data['estimasi_nilai']=[]}
+						if($(this).val()=='')$(this).val(0);
+						data['estimasi_nilai'].push($(this).val());
+					});
+
+					$(".estimasi_keterangan").each(function(){
+						if(data['estimasi_keterangan']==undefined){data['estimasi_keterangan']=[]}
+						if($(this).val()=='')$(this).val(0);
+						data['estimasi_keterangan'].push($(this).val());
 					});
 
 					$(".tgl_kjpp").each(function(){

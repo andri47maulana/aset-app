@@ -12,7 +12,7 @@
 
 		//tabel divestasi_data
 	    protected $dataTable = 'divestasi_data'; 
-	    protected $dataAllowedFields = ['id_divestasi', 'objek_divestasi','luas_objek_divestasi','nilai_objek_divestasi','jenis_rkap','lokasi_objek_divestasi','id_maia_masterlists','nilai_buku','nilai_buku_aset','nilai_njop','nilai_kjpp','satuan_aset','tgl_nilai_buku','tgl_njop','tgl_kjpp','jenis_aset','jumlah_aset','metode','start_date','target_date', 'created_at','current_start_log','current_target_log','current_status','unit_id_user','except_tahapan','periode_rkap']; 
+	    protected $dataAllowedFields = ['id_divestasi', 'objek_divestasi','luas_objek_divestasi','nilai_objek_divestasi','jenis_rkap','lokasi_objek_divestasi','id_maia_masterlists','nilai_buku','nilai_buku_aset','nilai_njop','nilai_kjpp','satuan_aset','tgl_nilai_buku','tgl_njop','tgl_kjpp','jenis_aset','jumlah_aset','metode','start_date','target_date', 'created_at','current_start_log','current_target_log','current_status','unit_id_user','except_tahapan','periode_rkap','estimasi_nilai','estimasi_keterangan','kode_divestasi','keterangan_pembayaran']; 
 
 
 	    public function insert_divestasi_data2($data)
@@ -52,6 +52,10 @@
 		            'nilai_buku_aset' 	 => $data['nilai_buku_aset'],
 		            'nilai_njop' 		 => $data['nilai_njop'],
 		            'nilai_kjpp' 		 => $data['nilai_kjpp'],
+		            'estimasi_nilai'	 => $data['estimasi_nilai'],
+		            'estimasi_keterangan'  => $data['estimasi_keterangan'],
+		            'keterangan_pembayaran'=> $data['keterangan_pembayaran'],
+
 		            'tgl_nilai_buku' 	 => $data['tgl_nilai_buku'],
 		            'tgl_njop' 			 => $data['tgl_njop'],
 		            'tgl_kjpp' 			 => $data['tgl_kjpp'],
