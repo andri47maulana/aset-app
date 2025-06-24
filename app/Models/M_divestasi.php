@@ -36,6 +36,7 @@
 	        unset($data['post']);
 	        if($log==0){
 	        	$updateFields = [
+		            'kode_divestasi'     => $data['kode_divestasi'],
 		            'objek_divestasi'    => $data['objek_divestasi'],
 		            'id_maia_masterlists'=> $data['id_maia_masterlists'],
 		            'metode'             => $data['metode'],

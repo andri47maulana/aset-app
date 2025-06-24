@@ -262,6 +262,7 @@ $encrypter = \Config\Services::encrypter();
                       <thead>
                         <tr style="text-align: center;" role="row">
                           <th>No.</th>
+                          <th>Kode</th>
                           <th>Objek Divestasi</th>
                           <!-- <th>Luas Objek<br>Divestasi (Meter)</th> -->
                           <th>Lokasi</th>
@@ -529,6 +530,13 @@ $encrypter = \Config\Services::encrypter();
           "data": null,
           render: function(data, type, row, meta) {
             return meta.row + meta.settings._iDisplayStart + 1;
+          }
+        },
+        {
+          "data": "kode_divestasi",
+          render: function(data,type,row){
+            var editUrl = "<?= base_url('C_divestasi/proses') ?>" + "/" + row.id_divestasi;
+            return '<a href="' + editUrl +'">'+row.kode_divestasi+'</a>';
           }
         },
         {
