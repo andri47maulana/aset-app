@@ -563,6 +563,8 @@ class C_divestasi extends BaseController
             } else {
                 $data['progress_tahapan'][$tahapan] = 0; // Default value to avoid errors
             }
+
+            if($data['progress_tahapan'][$tahapan] > 100)$data['progress_tahapan'][$tahapan] =100;
         }
 
 
@@ -917,7 +919,8 @@ class C_divestasi extends BaseController
             } else {
                 echo json_encode([
                     "status" => "error",
-                    "message" => "Gagal menyimpan data"
+                    "message" => "Gagal menyimpan data",
+                    "error_" => $this->db->getLastQuery()->getQuery()
                 ]);
             }
             
