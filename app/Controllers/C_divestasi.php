@@ -560,6 +560,8 @@ class C_divestasi extends BaseController
             // echo "</pre>";
 
                 $data['progress_tahapan'][$tahapan] = number_format($dataUpload['jumlah'][$tahapan] / $document_wajib[$tahapan] * 100, 2);
+                // var_dump($data['progress_tahapan'][$tahapan]);
+                // var_dump($dataUpload['jumlah'][$tahapan]);
             } else {
                 $data['progress_tahapan'][$tahapan] = 0; // Default value to avoid errors
             }
@@ -620,11 +622,14 @@ class C_divestasi extends BaseController
 
         $sql= "select COUNT(DISTINCT kategori) as jumlah,tahapan 
                 from divestasi_log_tahapan log
+                left join divestasi_dokumen dok on dok.nama_dokumen_divestasi=log.kategori
                 where log.id_divestasi='".$id_divestasi."' 
                 AND log.tahapan NOT IN ($except_tahapan_sql) 
                 and approval_status='approve'
                 and log.kategori not like '-->%'
+                and optional is null
                 group by tahapan";
+        //var_dump($sql);
         $query=$this->db->query($sql);
         $result = $query->getResultArray();
         $total=0;
