@@ -812,7 +812,7 @@
 																						        </select>
 
 																						    <div class="form-group" id="input_bayar-<?= $id_tahapan?>" style="display: none;">
-																						        <label for="nominal">Jumlah Bayar</label><input type="number" placeholder="Rp." id="nominal_bayar-<?= $id_tahapan?>" name="nominal_bayar" class="form-control" />
+																						        <label for="nominal">Jumlah Bayar</label><input type="text" placeholder="Rp." id="nominal_bayar-<?= $id_tahapan?>" name="nominal_bayar" class="form-control format_angka" />
 																						    </div>
 
 																						    <button type="submit" class="btn btn-success" <?= ($divestasi_data->current_status!=$tahapan)?'':''?>>Upload</button>

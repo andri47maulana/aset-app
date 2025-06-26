@@ -405,6 +405,8 @@ class C_divestasi extends BaseController
         $nominal = $this->request->getPost('nominal_bayar');
         $tahapan_label = $this->request->getPost('tahapan_label');
 
+        $nominal = str_replace(".", "", $nominal);
+        
         // Validasi input
         if (!$fileGroup || !$uploadedFile || !$uploadedFile->isValid()) {
             return redirect()->back()->with('error', 'Harap memilih group file dan file untuk diunggah.');
@@ -426,7 +428,8 @@ class C_divestasi extends BaseController
                 'created_at' => date('Y-m-d H:i:s'),
             ]);
 
-            //echo $this->db->getLastQuery()->getQuery();
+            // echo $this->db->getLastQuery()->getQuery();
+            // exit();
 
             $dataPesan['id_divestasi']    = $id_divestasi;
             $dataPesan['objek_divestasi'] = $objek_divestasi;
