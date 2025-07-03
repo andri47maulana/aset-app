@@ -534,6 +534,79 @@ class Map_ai extends BaseController
         }
     }
 
+
+    public function ai_jelaskan_analysis($data,$tanya){
+        $role_system ='Output hanya JSON tanpa ada kalimat lain,';
+        $role_system.='Berikan informasi sesuai kebutuhan pertanyaan,';
+        $role_system.='jawaban hanya mengacu pada data yang diberikan,';
+        $role_system.='jangan tampilkan dataset id pada jawaban,';
+        $role_system.=`output dalam bentuk json dengan format JSON sebagai berikut: 
+        {
+            kesimpulan:.....,
+            table_html:.....
+        }`;
+        $role_system.=`tampilkan output hanya dalam bentuk JSON`; 
+
+        $pertanyaan = "berdasarkan pertanyaan ini ".$tanya.", jelaskan data ini ".$data." dengan jelas";
+
+        $response = $this->getResponseAiMistral($role_system, $pertanyaan);
+
+        if ($response != null) {
+            return json_encode(
+                [
+                    "status" => "success",
+                    "response"  => $response,
+                    "data"=>$data,
+                ]);
+        } else {
+            return json_encode(
+                [
+                    "status" => "LLM not response",
+                    "response"  => "Maaf, tidak ada data yg dianalisa",
+                    "data"=>$data,
+                ]);
+        }
+    }
+
+
+    public function ai_build_chart($data,$tanya){
+        $role_system ='Output hanya JSON tanpa ada kalimat lain,';
+        $role_system.='Ubah data menjadi categories, color dan series untuk highcharts,';
+        $role_system.='tambahkan kesimpulan dari data tersebut,';
+        $role_system.='tambahkan juga saran dan masukkan ke dalam JSON output sesuai format dibawah';
+        $role_system.=`output dalam bentuk json harus sesuai format JSON ini:
+        {
+            categories:.....,
+            series:.....,
+            color:.....,
+            kesimpulan:....,
+            saran:.....,
+        }`;
+
+        $role_system.=`sertakan warna yang berbeda disetiap seriesnya,`; 
+        $role_system.=`tampilkan output hanya dalam bentuk JSON`; 
+
+        $pertanyaan = "berdasarkan pertanyaan ini ".$tanya.", jelaskan data ini ".$data." dengan jelas";
+
+        $response = $this->getResponseAiMistral($role_system, $pertanyaan);
+
+        if ($response != null) {
+            return json_encode(
+                [
+                    "status" => "success",
+                    "response"  => $response,
+                    "data"=>$data,
+                ]);
+        } else {
+            return json_encode(
+                [
+                    "status" => "LLM not response",
+                    "response"  => "Maaf, tidak ada data yg dianalisa",
+                    "data"=>$data,
+                ]);
+        }
+    }
+
     public function ai_jelaskan_aset_tanah($data="",$tanya="",$text_query=""){
 
         
@@ -749,6 +822,45 @@ class Map_ai extends BaseController
             echo json_encode($data);
 
         }
+    }
+
+
+
+    public function ai_analysis()
+    {
+        // Ambil input dari POST
+        $tanya = $this->request->getPost('tanya');
+
+        // Validasi input
+        if (empty($tanya)) {
+            return $this->response->setJSON([
+                'response' => 'Pertanyaan tidak boleh kosong.',
+                'info'     => null
+            ]);
+        }
+
+        // Ambil data dari model
+        $model = new Map_aiModel();
+        $getData = $model->getHRIS($tanya);
+
+        // Cek hasil pengambilan data
+        if (!isset($getData['status']) || $getData['status'] !== "success") {
+            return $this->response->setJSON([
+                'response' => 'Maaf, data tidak tersedia!',
+                'info'     => $getData
+            ]);
+        }
+
+        // Encode data untuk dikirim ke AI analisis
+        $dataJson = json_encode($getData['data']);
+        $penjelasan = $this->ai_build_chart($dataJson, $tanya);
+        $penjelasan = json_decode($penjelasan);
+        // Berikan respons akhir
+        return $this->response->setJSON([
+            'response' => $penjelasan->response ?? 'Tidak ada hasil.',
+            'info'     => $penjelasan,
+            'data'     => $getData
+        ]);
     }
 
 

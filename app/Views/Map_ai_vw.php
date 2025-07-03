@@ -26,6 +26,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
 
 
 
@@ -47,288 +48,12 @@
 
 
 <?= $this->section('content'); ?>  
-<style type="text/css">
-  .overlay-panel {
-      position: absolute;
-      top: 60px;
-      right: 10px;
-      width: 400px;
-      max-height: 90vh;
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      z-index: 1000;
-      transition: transform 0.3s ease;
-      overflow: auto;
-    }
+<link href="<?= base_url(); ?>/assets/ai/ai.css" rel="stylesheet"> 
+<link href="<?= base_url(); ?>/assets/ai/overlay-bottom.css" rel="stylesheet"> 
 
-    .overlay-title-panel {
-      position: absolute;
-      top: 10px;
-      left: 50px;
-      width: 350px;
-      max-height: 50vh;
-      background-color: rgb(255 255 255 / 42%);
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      z-index: 1000;
-      transition: transform 0.3s ease;
-      overflow: auto;
-      font-size: 23px;
-      font-weight: bold;
-    }
-
-    .overlay-hidden {
-      transform: translateX(110%);
-    }
-
-    .toggle-btn {
-      position: absolute;
-      top: 15px;
-      right: 60px;
-      z-index: 1100;
-    }
-
-    .toggle-detail-btn {
-      position: absolute;
-      top: 15px;
-      right: 230px;
-      z-index: 1100;
-    }
-
-    .login-btn {
-      position: absolute;
-      top: 15px;
-      right: 360px;
-      z-index: 1100;
-    }
-
-    #panelTabs{
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-
-    .overlay-detail-panel {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      width: 800px;
-      height: 35vh;
-      background: rgb(255 255 255 / 42%);
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      z-index: 1000;
-      transition: transform 0.3s ease;
-      overflow: auto;
-    }
-
-    .overlay-detail-hidden {
-      transform: translateX(-110%);
-    }
-
-
-    .info-slider-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .info-slider {
-      display: flex;
-      overflow-x: auto;
-      scroll-behavior: smooth;
-      gap: 10px;
-      padding: 10px 0;
-      max-width: 100%;
-    }
-
-    .info-item {
-      min-width: 120px;
-      max-width: 140px;
-      text-align: center;
-      cursor: pointer;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 8px;
-      background: #f9f9f9;
-      transition: 0.3s;
-    }
-    .info-item img {
-      width: 100%;
-      height: 100px;
-      border-radius: 4px;
-    }
-    .info-item:hover {
-      background: #eef;
-    }
-
-    .slider-btn {
-      position: absolute;
-      top: 40%;
-      transform: translateY(-50%);
-      z-index: 10;
-      background: rgba(255,255,255,0.9);
-      border: none;
-      border-radius: 50%;
-      font-size: 24px;
-      width: 36px;
-      height: 36px;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-    .slider-btn.left {
-      left: -10px;
-    }
-    .slider-btn.right {
-      right: -10px;
-    }
-
-
-
-    .zoom-modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.8);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-
-    .media-modal-box {
-      display: flex;
-      max-width: 90%;
-      max-height: 90%;
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
-      flex-wrap: wrap;
-    }
-
-    .media-left {
-      flex: 2;
-      background: black;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .media-left img, .media-left iframe {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .media-right {
-      flex: 1;
-      padding: 16px;
-      overflow-y: auto;
-      max-height: 100%;
-    }
-
-    .media-right h5 {
-      margin-bottom: 8px;
-    }
-
-    .media-right small {
-      color: #666;
-    }
-
-
-
-    .custom-modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-    }
-    .modal-content-custom {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 600px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-
-
-    .label-container {
-        display: flex;
-        align-items: center;
-        background: #f9f9f9;
-        border: 0.15em solid #333;
-        border-radius: 2em;
-        box-shadow: 0 0.2em 0.6em rgba(0, 0, 0, 0.2);
-        font-size: 1em; /* Responsive base size */
-        max-width: 90vw; /* Prevent overflow on small screens */
-    }
-
-    .icon-circle {
-        width: 2em;
-        height: 2em;
-        border-radius: 50%;
-        background: white;
-        border: 0.15em solid #333;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 0.6em;
-        flex-shrink: 0;
-    }
-
-    .pin {
-        width: 0.9em;
-        height: 1em;
-        background: red;
-        border-radius: 50% 50% 50% 0;
-        transform: rotate(-45deg);
-        position: relative;
-    }
-
-    .pin::after {
-        content: '';
-        position: absolute;
-        top: 0.25em;
-        left: 0.25em;
-        width: 0.4em;
-        height: 0.4em;
-        background: white;
-        border-radius: 50%;
-    }
-
-    .label-text {
-        font-size: 1em;
-        font-weight: bold;
-        color: #333;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    #aiKesimpulan2{
-          background: #fff3f3;
-          border-radius: 5px;
-    }
-
-
-
-
-
-
-
-</style>  
 
 <!-- Toggle Button -->
-<button class="btn btn-warning toggle-btn" id="togglePanel">Informasi</button>
+<button class="btn btn-warning toggle-btn" id="togglePanel">AI Tools</button>
 <button class="btn btn-primary toggle-detail-btn" id="toggleDetail">File & Media</button>
 <button class="btn btn-success login-btn" id="LoginBtn">Login</button>
 
@@ -343,135 +68,247 @@
 </div>
 
 <!-- Panel Overlay dengan Tabs -->
-<div class="overlay-panel p-3 overlay-hidden" id="infoPanel">
-  <!-- Tabs -->
-  <ul class="nav nav-tabs" id="panelTabs" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="ai-tab" data-bs-toggle="tab" data-bs-target="#ai" type="button" role="tab">Tanya AI</button>
-    </li>
-    
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="draw-tab" data-bs-toggle="tab" data-bs-target="#draw" type="button" role="tab">Tambah Lokasi</button>
-    </li>
-
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="layers-tab" data-bs-toggle="tab" data-bs-target="#layers" type="button" role="tab">Layer</button>
-    </li>
-
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">Fitur Lain</button>
-    </li>
-    
-  </ul>
-
-  <!-- Tab Content -->
-  <div class="tab-content mt-3" id="panelTabsContent">
-    <div class="tab-pane fade" id="draw" role="tabpanel">
-      <div class="d-grid gap-2">
-        <input class="form-control" type="text" placeholder="Nama Lokasi / Project" id="judul"/>
-        <textarea class="form-control" placeholder="Keterangan/Informasi" id="description"></textarea>
-        
-        <div class="d-flex flex-wrap gap-1 justify-content-between mb-3">
-          <button class="btn btn-outline-primary btn-sm" id="drawMarkerBtn" title="Marker">
-            <i class="bi bi-geo-alt-fill"></i>
-          </button>
-          <button class="btn btn-outline-primary btn-sm" id="drawPolygonBtn" title="Polygon">
-            <i class="bi bi-bounding-box-circles"></i>
-          </button>
-          <button class="btn btn-outline-primary btn-sm" id="drawPolylineBtn" title="Polyline">
-            <i class="bi bi-dash-lg"></i>
-          </button>
-          <button class="btn btn-outline-primary btn-sm" id="drawRectangleBtn" title="Rectangle">
-            <i class="bi bi-square-fill"></i>
-          </button>
-          <button class="btn btn-outline-primary btn-sm" id="drawCircleBtn" title="Circle">
-            <i class="bi bi-circle-fill"></i>
-          </button>
-
-          <button class="btn btn-outline-secondary btn-sm" id="finishBtn" title="Selesai">
-            <i class="bi bi-x-circle"></i>
-          </button>
-        </div>
-
-      </div>
-      <hr>
-
-      <div class="d-grid gap-2">
-        <div class="d-flex flex-wrap gap-1 justify-content-between mb-3">
-            <button class="btn btn-outline-warning" id="editShapesBtn"><i class="bi bi-pencil-fill"></i> Edit</button>
-            <button class="btn btn-outline-danger" id="deleteShapesBtn"><i class="bi bi-trash3"></i>Delete</button>
-            <!-- <button class="btn btn-outline-primary" id="uploadBtn"><i class="bi bi-upload"></i> Upload</button> -->
-            <button class="btn btn-outline-success" id="saveBtn" title="Simpan"><i class="bi bi-save-fill"></i> Simpan</button>
-        </div>
-      </div>
-
-      <div class="d-grid gap-2 mt-3">
-        
-      <!-- <button class="btn btn-danger mt-2" id="clearAllBtn">🗑 Hapus Semua</button> -->
-      </div>
-
-      <!-- Tombol tambahan -->
-      
-
+<div class="overlay-panel overlay-hidden" id="infoPanel">
+  <div class="chat-header">
+        <div class="chat-title">AIGR1 Assistant</div>
     </div>
-    <div class="tab-pane fade" id="layers" role="tabpanel">
-      <label for="search"><b>Regional:</b></label>
-      <select class="form-control " id="regional" onchange="load_shp(this.value)">
-              <option value="">-- Pilih Regional --</option>
-              <option value="REGIONAL 1">Regional 1</option>
-              <option value="REGIONAL 2">Regional 2</option>
-              <option value="REGIONAL 3">Regional 3</option>
-              <option value="REGIONAL 4">Regional 4</option>
-              <option value="REGIONAL 5D">Regional 5</option>
-              <option value="REGIONAL 6">Regional 6</option>
-              <option value="ALAS_HAK">DATA ALAS HAK</option>
-              <option value="GARAPAN_PER_HGU">DATA GARAPAN</option>
-              <!-- <option value="REGIONAL 7">Regional 7</option>
-              <option value="REGIONAL 8/KEBUN TEBU">Regional 8</option> -->
-        </select>
-    </div>
-    <div class="tab-pane fade" id="info" role="tabpanel">
-          <label for="search"><b>Cuaca:</b></label>
-          <select class="form-select" style="width: 100%;" id="selectWilayah" name="wilayah"></select>
-          <input id="tambahan" class="form-control" type="text" placeholder="tanya cuaca ke AIGR1....."/>
-          <button class="btn btn-success btn-sm" onclick="getDataCuaca()">Cari</button>
-          <button class="btn btn-success btn-sm" id="btn-pahami" style="display: none;" onclick="ai_pahami()">pahami</button>
-          <button class="btn btn-warning btn-sm" id="btn-res" onclick="markers.clearLayers()">Reset</button>
-      <hr>
-      <hr>
-      <div>
-         <label for="search"><b>Health Monitoring:</b></label>
-          <select class="form-control" style="width: 250px;" id="regional" onchange="load_ndvi(this.value)">
-                <option value="">-- Pilih Regional --</option>
-                <option value="assets/ndvi/ndvi_reg1.tif">NDVI Regional 1</option>
-                <option value="assets/ndvi/ndvi_reg2.tif">NDVI Regional 2</option>
+
+    <div style="padding:10px">
+          <!-- Tabs -->
+          <ul class="nav nav-tabs" id="panelTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="ai-tab" data-bs-toggle="tab" data-bs-target="#ai" type="button" role="tab">Tanya AI</button>
+            </li>
+            
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="draw-tab" data-bs-toggle="tab" data-bs-target="#draw" type="button" role="tab">Training Map</button>
+            </li>
+
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="predict-tab" data-bs-toggle="tab" data-bs-target="#predict" type="button" role="tab">Predictive & Prescriptive</button>
+            </li>
+
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="layers-tab" data-bs-toggle="tab" data-bs-target="#layers" type="button" role="tab">Regional</button>
+            </li>
+
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">Fitur Lain</button>
+            </li>
+
+            
+            
+          </ul>
+
+          <!-- Tab Content -->
+          <div class="tab-content mt-3" id="panelTabsContent">
+            <div class="tab-pane fade" id="draw" role="tabpanel">
+              <div class="d-grid gap-2">
+                <input class="form-control" type="text" placeholder="Nama Lokasi / Project" id="judul"/>
+                <textarea class="form-control" placeholder="Keterangan/Informasi" id="description"></textarea>
                 
-          </select>
-      </div>
+                <div class="d-flex flex-wrap gap-1 justify-content-between mb-3">
+                  <button class="btn btn-outline-primary btn-sm" id="drawMarkerBtn" title="Marker">
+                    <i class="bi bi-geo-alt-fill"></i>
+                  </button>
+                  <button class="btn btn-outline-primary btn-sm" id="drawPolygonBtn" title="Polygon">
+                    <i class="bi bi-bounding-box-circles"></i>
+                  </button>
+                  <button class="btn btn-outline-primary btn-sm" id="drawPolylineBtn" title="Polyline">
+                    <i class="bi bi-dash-lg"></i>
+                  </button>
+                  <button class="btn btn-outline-primary btn-sm" id="drawRectangleBtn" title="Rectangle">
+                    <i class="bi bi-square-fill"></i>
+                  </button>
+                  <button class="btn btn-outline-primary btn-sm" id="drawCircleBtn" title="Circle">
+                    <i class="bi bi-circle-fill"></i>
+                  </button>
+
+                  <button class="btn btn-outline-secondary btn-sm" id="finishBtn" title="Selesai">
+                    <i class="bi bi-x-circle"></i>
+                  </button>
+                </div>
+
+              </div>
+              <hr>
+
+              <div class="d-grid gap-2">
+                <div class="d-flex flex-wrap gap-1 justify-content-between mb-3">
+                    <button class="btn btn-outline-warning" id="editShapesBtn"><i class="bi bi-pencil-fill"></i> Edit</button>
+                    <button class="btn btn-outline-danger" id="deleteShapesBtn"><i class="bi bi-trash3"></i>Delete</button>
+                    <!-- <button class="btn btn-outline-primary" id="uploadBtn"><i class="bi bi-upload"></i> Upload</button> -->
+                    <button class="btn btn-outline-success" id="saveBtn" title="Simpan"><i class="bi bi-save-fill"></i> Simpan</button>
+                </div>
+              </div>
+
+              <div class="d-grid gap-2 mt-3">
+                
+              <!-- <button class="btn btn-danger mt-2" id="clearAllBtn">🗑 Hapus Semua</button> -->
+              </div>
+
+              <!-- Tombol tambahan -->
+              
+
+            </div>
+
+            <div class="tab-pane fade" id="predict" role="tabpanel">
+              <div style="min-height: 400px;">
+                <form class="form-group">
+                    <label>Objek Prediksi</label>
+                    <input type="text" class="form-control" id="q1" placeholder="" name="" value="karyawan pensiun">
+                    <label>Periode</label>
+                    <input type="text" class="form-control" id="q2" placeholder="" name="" value="2025 sampai 2027">
+                    <label>Ruang Lingkup</label>
+                    <input type="text" class="form-control" id="q3" name="" value="setiap regional">
+                    <label>Ketentuan lain</label>
+                    <input type="text" class="form-control" id="q4" name="" value="">
+                    <a href="#" class="btn btn-outline-success" id="analysisBtn">Analysis</a>
+                </form>
+                <i style="font-size: 10px;">Source : HRIS</i>
+                <hr>
+              </div>
+            </div>
+
+            <div class="tab-pane fade" id="layers" role="tabpanel">
+              <label for="search"><b>Regional:</b></label>
+              <select class="form-control " id="regional" onchange="load_shp(this.value)">
+                      <option value="">-- Pilih Regional --</option>
+                      <option value="REGIONAL 1">Regional 1</option>
+                      <option value="REGIONAL 2">Regional 2</option>
+                      <option value="REGIONAL 3">Regional 3</option>
+                      <option value="REGIONAL 4">Regional 4</option>
+                      <option value="REGIONAL 5D">Regional 5</option>
+                      <option value="REGIONAL 6">Regional 6</option>
+                      <option value="ALAS_HAK">DATA ALAS HAK</option>
+                      <option value="GARAPAN_PER_HGU">DATA GARAPAN</option>
+                      <!-- <option value="REGIONAL 7">Regional 7</option>
+                      <option value="REGIONAL 8/KEBUN TEBU">Regional 8</option> -->
+                </select>
+            </div>
+            <div class="tab-pane fade" id="info" role="tabpanel">
+                  <label for="search"><b>Cuaca:</b></label>
+                  <select class="form-select" style="width: 100%;" id="selectWilayah" name="wilayah"></select>
+                  <input id="tambahan" class="form-control" type="text" placeholder="tanya cuaca ke AIGR1....."/>
+                  <button class="btn btn-success btn-sm" onclick="getDataCuaca()">Cari</button>
+                  <button class="btn btn-success btn-sm" id="btn-pahami" style="display: none;" onclick="ai_pahami()">pahami</button>
+                  <button class="btn btn-warning btn-sm" id="btn-res" onclick="markers.clearLayers()">Reset</button>
+              <hr>
+              <hr>
+              <div>
+                 <label for="search"><b>Health Monitoring:</b></label>
+                  <select class="form-control" style="width: 250px;" id="regional" onchange="load_ndvi(this.value)">
+                        <option value="">-- Pilih Regional --</option>
+                        <option value="assets/ndvi/ndvi_reg1.tif">NDVI Regional 1</option>
+                        <option value="assets/ndvi/ndvi_reg2.tif">NDVI Regional 2</option>
+                        
+                  </select>
+              </div>
+            </div>
+
+
+
+            <div class="tab-pane fade show active" id="ai" role="tabpanel">
+                <!-- <div  style="overflow: scroll; min-height: 450px; background: white; display: flex; align-items: center; gap: 20px; justify-content: center; padding: 30px;">
+                    <pre style='font-family: monospace; white-space: pre-wrap; word-wrap: break-word;' id="aiKesimpulan"></pre>
+                </div> -->
+                <div  style="overflow: scroll; min-height: 450px; background: white;  align-items: center; gap: 20px; justify-content: center; ">
+                    <pre style='font-family: monospace; white-space: pre-wrap; word-wrap: break-word;' id="aiKesimpulan"></pre>
+                    <pre style='font-family: monospace; white-space: pre-wrap; word-wrap: break-word;' id="aiKesimpulan2"></pre>
+                </div>
+                <div style="margin-top: 10px;">
+                    <textarea placeholder="silahkan ketik pertanyaan atau klik mulai bicara?" class="form-control" id="pertanyaan-lanjutan"></textarea>
+                    <button class="btn btn-success" onclick="getData()">Tanya Saya</button>
+                    <button class="btn btn-primary"type="button" id="start">Mulai Bicara</button>
+                </div>
+                <i style="font-size: 12px;">contoh pertanyaan: <br>Tampilkan kerjasama di jember?</i>
+            </div>
+          </div>
+
     </div>
 
-
-
-    <div class="tab-pane fade show active" id="ai" role="tabpanel">
-        <!-- <div  style="overflow: scroll; min-height: 450px; background: white; display: flex; align-items: center; gap: 20px; justify-content: center; padding: 30px;">
-            <pre style='font-family: monospace; white-space: pre-wrap; word-wrap: break-word;' id="aiKesimpulan"></pre>
-        </div> -->
-        <div  style="overflow: scroll; min-height: 450px; background: white;  align-items: center; gap: 20px; justify-content: center; ">
-            <pre style='font-family: monospace; white-space: pre-wrap; word-wrap: break-word;' id="aiKesimpulan"></pre>
-            <pre style='font-family: monospace; white-space: pre-wrap; word-wrap: break-word;' id="aiKesimpulan2"></pre>
-        </div>
-        <div style="margin-top: 10px;">
-            <textarea placeholder="silahkan ketik pertanyaan atau klik mulai bicara?" class="form-control" id="pertanyaan-lanjutan"></textarea>
-            <button class="btn btn-success" onclick="getData()">Tanya Saya</button>
-            <button class="btn btn-primary"type="button" id="start">Mulai Bicara</button>
-        </div>
-        <i style="font-size: 12px;">contoh pertanyaan: <br>Tampilkan kerjasama di jember?</i>
-    </div>
-  </div>
 </div>
 
 <!-- MAP -->
 <div id="map"></div>    
+<button >Buka Overlay</button>
+
+<div class="overlay" id="bottomOverlay" style="background: #d6d6d6;">
+  <div class="drag-handle" id="dragHandle"></div>
+
+      <!-- Tombol kanan atas -->
+      <div class="overlay-header-buttons">
+        <button id="resetHeightBtn" class="btn-icon" title="Reset Tinggi">
+          <i class="fas fa-arrow-up"></i>
+        </button>
+        <button id="closeOverlayBtn" class="btn-icon" title="Tutup Overlay">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="overlay-content">
+
+          <div class="container-fluid">
+                <div class="row">
+                  <!-- Main content -->
+                  <main class="col-md-20 ms-sm-auto col-lg-12">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center border-bottom">
+                      <b>AI Analysis Dashboard</b>
+                    </div>
+
+                    <div class="row g-4 dashboard-section">
+
+                      <!-- Chart -->
+                      <div class="col-md-6">
+                        <div class="card p-3">
+                          <h5 class="mb-3" id="label_chart"></h5>
+                          <div id="chartContainer" style="height: 300px; background-color: #f0f0f0;"></div>
+                        </div>
+                      </div>
+
+                      
+
+                      <!-- Analisis -->
+                      <div class="col-md-3">
+                        <div class="card p-3">
+                          <h5 class="mb-3">Prediksi & Kesimpulan</h5>
+                          <div id="analysis_kesimpulan" style="height: 300px; background-color: #f0f0f0;">
+                            
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Saran -->
+                      <div class="col-md-3">
+                        <div class="card p-3">
+                          <h5 class="mb-3">Saran</h5>
+                          <div id="analysis_saran" style="height: 300px; background-color: #f0f0f0;">
+                            
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Tabel -->
+                      <div class="col-md-12">
+                        <div class="card p-3">
+                          <h5 class="mb-3">Data Tabular</h5>
+                          <table class="table table-striped dashboard-table">
+                            <thead>
+                              <tr><th>Nama<th>Jabatan<th>Regional<th>Umur Sekarang<th>Masa Kerja</tr>
+                            </thead>
+                            <tbody>
+                              
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+
+                    </div>
+                  </main>
+                </div>
+              </div>
+    </div>
+
+  </div>
 
 
 <div class="overlay-detail-panel p-3 overlay-detail-hidden" id="detailPanel">
@@ -525,9 +362,6 @@
         <p>Video Lokasi</p>
       </div>
     </div>
-
- 
-
 </div>
 
 <div id="mediaModal" class="zoom-modal" onclick="closeMediaModal()">
@@ -565,6 +399,37 @@
     <!-- <button class="btn btn-secondary btn-sm mt-3" id="uploadBtn">🚀 Upload</button> -->
   </div>
 </div>
+
+
+<!-- Modal Predictive -->
+<!-- <div id="predictModal" onclick="closeCustomModal('predictModal')">
+  <div class="modal-content-custom" onclick="event.stopPropagation()">
+    <h5>Prescriptive</h5>
+    
+  </div>
+</div> -->
+
+<div id="predictModal" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Modal body text goes here.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"onclick="closeCustomModal('predictModal')">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
         
     
 <script src="https://unpkg.com/shpjs@latest/dist/shp.js"></script>
@@ -576,8 +441,10 @@
 <script src="https://releases.transloadit.com/uppy/v3.5.0/uppy.min.js"></script>
 <script src="https://unpkg.com/georaster"></script>
 <script src="https://unpkg.com/georaster-layer-for-leaflet"></script>
+<script src="<?= base_url(); ?>/assets/ai/overlay-bottom.js?<?= time()?>"></script>
 
-    <script>
+
+<script>
 
         var map = L.map('map', {
           fullscreenControl: true
@@ -619,16 +486,11 @@
 
         L.control.layers(baseMaps).addTo(map);
         
-
-
         var markers = L.featureGroup();//L.markerClusterGroup();
-
-        var marker_cuaca= '';//load_cuaca(info);
-
-        </script>
+</script>
 
 
-        <script type="text/javascript">
+<script type="text/javascript">
           const toggleBtn = document.getElementById('togglePanel');
           const panel = document.getElementById('infoPanel');
 
@@ -802,8 +664,7 @@
 
                   
           }
-
-        </script>
+</script>
 
 
 
@@ -911,6 +772,12 @@
             function openUploadMediaModal() {
               document.getElementById('uploadMediaModal').style.display = 'flex';
             }
+
+            function openPredictModal() {
+              document.getElementById('predictModal').classList.toggle('overlay-detail-hidden');
+              document.getElementById('predictModal').style.display = 'flex';
+            }
+
             function closeCustomModal(id) {
               document.getElementById(id).style.display = 'none';
             }
@@ -976,11 +843,6 @@
             // function startUpload() {
             //   uppy.upload();
             // }
-
-
-
-
-
         </script>
 
 
@@ -1883,6 +1745,7 @@
             }
         }
       </script>
+
 
     <!-- Leaflet Draw -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />

@@ -33,6 +33,137 @@ class Map_aiModel extends Model
     }
 
 
+    public function getHRIS($tanya){
+        $db2 = \Config\Database::connect('hris');
+
+        $query  = $db2->query("DESCRIBE dataset_pegawai");
+        $result = $query->getResultArray(); 
+        $struktur= json_encode($result);
+
+        $dataset_name = 'dataset_pegawai';
+        $dataset_id   = 'pegawai_id';
+
+        $query  = $db2->query("select * from dataset_pegawai order by updated_date desc limit 1");
+        $result = $query->getResultArray(); 
+        $row= json_encode($result);
+
+        $role_system = $this->role_prompt_chart($dataset_name,$struktur,$row,$dataset_id);
+
+        $pertanyaan = 'Buatkan query mysql yang sesuai untuk menjawab pertanyaan ini: '.$tanya;
+
+        $response =  $this->fetch_ai_mistral_json($role_system, $pertanyaan);
+
+        if ($response !== null) {
+            $query  = $db2->query($response['query']);
+            $data = json_encode($query->getResultArray()); 
+            $data_arr=$query->getResultArray();
+            $text_query = $db2->getLastQuery()->getQuery();
+
+
+            $arrayData = json_decode($data, true);
+
+            // Cek apakah array kosong
+            if (empty($arrayData)) {
+                return 
+                [
+                    "status" => "empty",
+                    "info"   => "arrayData empty",
+                    "query" => $text_query,
+                    "data" => [],
+                    "response"=>[]
+                ];
+            } else {
+
+                return 
+                [
+                    "status" => "success",
+                    "info"   => "data exist",
+                    "query" => $text_query,
+                    "data" => $data,
+                    "response"=>$response
+                ];
+            }
+           
+        } else {
+            return [
+                "status" => "failed",
+                "info"   => "Not Response (LLM)",
+                "query" => $response,
+                "response"=>[]
+            ];
+        }
+
+    }
+
+
+    private function role_prompt_chart($dataset_name,$struktur,$row,$dataset_id){
+        $role_system  ='anda adalah ai generator mysql query,';
+        $role_system .= 'ouput hasil querynya akan digunakan untuk data chart yang membutuhkan data categories dan series,';
+        $role_system .= 'saya memiliki table '.$dataset_name.' dengan struktur table mysql seperti ini '.$struktur.' dan contoh data seperti ini '.$row.',';
+        $role_system .= 'tampilkan hanya dalam bentuk query,';
+        $role_system .= "pilih field yang paling sesuai dengan pertanyaan saja,";
+        //$role_system .= "selalu sertakan field ".$dataset_id." dengan nama dataset_id di setiap rownya,";
+        $role_system .= "pilih minimal 2 field table yang paling sesuai dengan kebutuhan pertanyaan,";
+        $role_system .= "pilih field yang tersedia saja, jika butuh total atau jumlah gunakan count jika isinya bukan angka atau sum jika isinya angka,";
+        $role_system .= "Batasi hanya 30 data saja,";
+        //$role_system .= "Group kan datanya dan concat/comma join setiap isi dari field ".$dataset_id;
+
+        $role_system .= "gunakan like untuk kata-kata yang akan dicari,";
+        $role_system .= "di mana hanya pegawai dengan status_pegawai = 'Aktif' atau status_pegawai='Active',";
+        $role_system .= "Kelompokkan data berdasarkan tahun dari kolom tanggal_pensiun, dan untuk setiap tahun tampilkan tahun pensiun (YEAR(tanggal_pensiun)),";
+        //$role_system .= "daftar pegawai_id dalam satu baris menggunakan GROUP_CONCAT, dan jumlah pegawai (COUNT(pegawai_id)),";
+        $role_system .= "gunakan like untuk kata-kata yang akan dicari,";
+
+        $role_system .='masukkan query ke dalam bentuk json dengan nama query';
+
+        return $role_system;
+
+    }
+
+
+    private function role_prompt_chart2($dataset_name,$struktur,$row,$dataset_id){
+        $role_system  ='anda adalah ai generator mysql query yang menggenerate 2 query, query1 dan query2';
+        $role_system .= 'ouput hasil querynya akan digunakan untuk data chart yang membutuhkan data categories dan series,';
+        $role_system .= 'saya memiliki table '.$dataset_name.' dengan struktur table mysql seperti ini '.$struktur.' dan contoh data seperti ini '.$row.',';
+        $role_system .= 'tampilkan hanya dalam bentuk query,';
+        $role_system .= "pilih field yang paling sesuai dengan pertanyaan saja,";
+        $role_system .= "selalu sertakan field ".$dataset_id." dengan nama dataset_id di setiap rownya,";
+        $role_system .= "pilih minimal 2 field table yang paling sesuai dengan kebutuhan pertanyaan,";
+        $role_system .= "pilih field yang tersedia saja, jika butuh total atau jumlah gunakan count jika isinya bukan angka atau sum jika isinya angka,";
+        $role_system .= "Batasi hanya 30 data saja,";
+        $role_system .= "Group kan datanya dan concat/comma join setiap isi dari field ".$dataset_id;
+
+        $role_system .= "gunakan like untuk kata-kata yang akan dicari,";
+        $role_system .= "di mana hanya pegawai dengan status_pegawai = 'Aktif',";
+        $role_system .= "Kelompokkan data berdasarkan tahun dari kolom tanggal_pensiun, dan untuk setiap tahun tampilkan tahun pensiun (YEAR(tanggal_pensiun)),";
+        $role_system .= "khusus query2 buat isi field pegawai_id dalam satu baris menggunakan GROUP_CONCAT, dan jumlah pegawai (COUNT(pegawai_id)),";
+        $role_system .= "gunakan like untuk kata-kata yang akan dicari,";
+
+        $role_system .='masukkan query1 ke dalam bentuk json dengan nama query';
+        $role_system .='masukkan query2 ke dalam bentuk json dengan nama query2';
+
+        return $role_system;
+
+    }
+
+
+    private function role_prompt_data($dataset_name,$struktur,$row,$dataset_id){
+        $role_system  ='anda adalah ai generator mysql query,';
+        $role_system  .='saya memiliki table '.$dataset_name.' dengan struktur table mysql seperti ini '.$struktur.' dan contoh data seperti ini '.$row.',';
+        $role_system .='tampilkan hanya dalam bentuk query,';
+        $role_system .= "pilih field yang paling sesuai dengan pertanyaan saja,";
+        $role_system .= "selalu sertakan field ".$dataset_id." dengan nama dataset_id di setiap rownya,";
+        $role_system .= "pilih minimal 2 field table yang paling sesuai dengan kebutuhan pertanyaan,";
+        $role_system .= "pilih field yang tersedia saja, jika butuh total atau jumlah gunakan count jika isinya bukan angka atau sum jika isinya angka,";
+        $role_system .= "Batasi hanya 10 data saja,";
+
+        $role_system .= "gunakan like untuk kata-kata yang akan dicari";
+        $role_system .='masukkan query ke dalam bentuk json dengan nama query';
+        return $role_system;
+
+    }
+
+
     public function fetchAIResponse($role_system, $pertanyaan) {//untuk data konstan
         $url = "https://api.mistral.ai/v1/chat/completions";
         $apiKey = "qeizZBqCXZjpY4LpyXt7ZeSrzalHutvU"; // Ganti dengan API Key Anda
