@@ -759,7 +759,7 @@ class Map_ai extends BaseController
 
         $pertanyaan = 'Buatkan query mysql yang sesuai untuk menjawab pertanyaan ini: '.$tanya;
 
-        $response =  $this->getResponseAi2($role_system, $pertanyaan);
+        $response =  $this->getResponseAi($role_system, $pertanyaan);
         //echo json_encode($response['query']);
 
         if ($response !== null) {
